@@ -1,0 +1,209 @@
+%===============================Método - Partição N-Set Serial=============================
+\documentclass {amsart}
+\usepackage[portuges]{babel}
+\selectlanguage{portuges}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+%=================================Preamble ends here========================================
+\begin{document}
+\title[Método Serial de Partição de Conjuntos]
+ {Método Serial de Partição de Conjuntos}
+%=====================================Title=================================================
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estatística e Informática - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estatística e Informática - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+\keywords{Combinatorial Algorithms, Complexity, Optimization, Partition}
+%===================================Key Words===============================================
+\begin{abstract}
+Este artigo apresenta o Método Serial de Partição de Conjuntos (MSPC). A proposta do método é obter a partição de um conjunto a partir do seu número de série. Também será mostrado o método que realiza o processo inverso ao MSPC, obtendo o número serial a partir do vetor de partição. O artigo conclui com a demonstração das propriedades combinatoriais no material aqui exposto.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+ 
+%=================================Introduction=============================================
+\section*{Introdução}
+
+Para a partição de conjuntos, consideramos uma família de subconjuntos, {$T_1, T_2,\ldots,T_k $} contidos em um conjunto {$S = \{1,2,\ldots,n\}$}, que satisfaçam as seguintes condições:
+
+\begin{equation}
+T_i \cap T_j = \oslash \indent (i \neq j)
+\end{equation}
+
+\begin{equation}
+\bigcup _{i=1}^{k} T_i = S
+\end{equation}
+
+\begin{equation}
+T_i = \oslash \indent (i = 1, 2, \ldots,k)
+\end{equation}
+
+Onde não é levado em consideração a ordem dos elementos contidos em cada um dos subcojuntos de {$S$}. O algoritmo \emph{Next Partition of an {$n$}-Set}\cite{wi} realiza o trabalho de encontrar a próxima partição do conjunto a partir da partição atual, trabalhando apenas com informação local. A proposta do presente artigo é obter uma partição de {$S$} em função de sua posição na lista de partições, não levando em conta informações do vetor de partição.
+
+\section*{Construção do MSPC}
+
+O MSPC foi construído a partir da observação da saída de dados do algoritmo \emph{Next Partition}. Cada índice que denota o elemento pertencente a um determinado subconjunto possui um padrão de repetição, onde a busca por esses índices é feita numa estrutura combinatorial que toma como base a árvore que representa todas as partições de um conjunto de {$n$} elementos, denominada Árvore de Bell\cite{me}. Como o número de nós dessa estrutura cresce muito rapidamente à medida que {$n$} aumenta, a solução para tal problema é definir uma nova estrutura que realize um mapeamento das posições chave da Árvore. Tomou-se como referência uma estrutura matricial para guardar tais posições, denominada Matriz {$D$}.
+
+\subsection*{Definição da Matriz {$D$}}
+
+A Matriz {$D$} é uma matriz triangular superior com dimensão {$n$} x {$n$}. Sua primeira coluna é formada pelos Números de Bell \cite{me} 
+
+\begin{equation}
+	D_{v,0} = B_{n-v}
+\end{equation}
+
+e as colunas restantes são definidas pela equação
+
+\begin{equation}
+	D_{u,v} = D_{u,v-1} - v.D_{u+1,v-1}
+\end{equation}
+
+Em que {$u$} indica a coluna e {$v$} a linha em {$D$}, para {$u,v = (0,1,\ldots,n-1)$}. A matriz disposta em \ref{md} representa a Matriz {$D$} para {$n = 6$}.
+
+\begin{equation} \label{md}
+D = \left(\begin{array}{c c c c c c}
+203 & 151 & 77 & 26 & 6 & 1 \\
+52  & 37  & 17 & 5  & 1 &	  \\
+15  & 10  & 4  & 1  &   &	  \\
+5   & 3   & 1  &  	&	  &   \\
+2   & 1   &		 &		&	  &	  \\
+1   &		  &		 &		&		&   \\
+\end{array}\right)
+\end{equation}
+
+\subsection*{Algoritmo para preenchimento da Matriz {$D$}}
+Antes de processar o MSPC, é necessário preencher os elementos da matriz {$D$}, a fim de agilizar o cálculo de obtenção da busca na Árvore de Bell. O uso da Matriz {$D$} abstrai a construção de toda a Árvore, processando apenas o necessário para o uso do MSPC. Com relação à memória computacional utilizada, se a árvore fosse construída completamente teríamos o número de nós {$R$} equivalente à
+
+\begin{equation} \label{eqb}
+R = \sum_{j=1}^{n}B_j
+\end{equation}
+
+enquanto que na matriz {$D$} temos 
+
+\begin{equation} \label{eqb}
+R = \frac{n^2 + n}{2}
+\end{equation}
+\\\\
+\textbf{Algoritmo para preenchimento da Matriz {$D$}}\\
+Especificações do Algoritmo:
+
+\begin{itemize}
+\item {$D$}: Matriz que guarda as posições chave da Árvore;
+\item {$i,j$}: Índices para varredura da matriz {$D$};
+\item {$B$}: Número de Bell.
+\end{itemize}
+Rotina: \\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$D_i,0 \leftarrow B_{n-i}$}\\
+\indent End For\\
+\indent For {$i \leftarrow 1$} to {$n-1$} do\\
+\indent \indent For {$j \leftarrow 0$} to {$n-i-1$}\\
+\indent \indent \indent {$D_{j,i} \leftarrow D_{j,i-1} - i.D_{j+1,i-1}$}\\
+\indent \indent End For\\
+\indent End For.
+
+\subsection*{Especificações do MSPC}
+Depois que a matriz {$D$} tem seus valores devidamente preenchidos, o MSPC pode ser acionado. Temos um laço externo que percorre todo o vetor de partição, atribuindo os índices para cada componente por meio da sub-rotina \emph{element}, que por sua vez realiza uma varredura no nível atual da árvore, estrutura esta que foi abstraída no método. Dentro dessa varredura, temos uma condição que examina se a varíavel responsável pela indicação de extrapolação ultrapassou o número serial tomado como entrada. No caso de extrapolar esse valor, descemos um nível da árvore; caso contrário, somamos o valor do filho atual à variável de controle para posterior verificação de extrapolação. Caso a condição não seja satifeita ao longo de todo o laço, significa que a busca dentro do nível da árvore chegou ao último filho deste nível, indicado que a busca será espandida para o último filho do nível atual da árvore.
+\\\\
+\textbf{Método Serial para Partição de Conjuntos}\\
+Especificações do Algoritmo:
+
+\begin{itemize}
+\item {$p$}: Vetor de partição;
+\item {$D$}: Matriz que guarda as posições chave da Árvore;
+\item {$i,j$}: Índices para varredura da matriz {$D$};
+\item {$k$}: Índice para varredura no vetor {$p$};
+\item {$t$}: Índice que determina o elemento de cada componente do vetor de partição;
+\item {$a$}: Número que realiza a convergência para o número de série dado como entrada;
+\item {$s$}: Serial da partição.
+\end{itemize}
+Rotina: \\
+\indent {$i \leftarrow j \leftarrow a \leftarrow 0$}\\
+\indent For {$k \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$p_k \leftarrow element$}\\
+\indent End For \\
+return p.\\\\
+Sub-Rotina {$element$}\\
+\indent For {$t \leftarrow 0$} to {$j$} do\\
+\indent \indent If {$a + D_{i,j} \geq s$}\\
+\indent \indent \indent {$i \leftarrow i + 1$}\\
+\indent \indent \indent return t.\\
+\indent \indent End If\\
+\indent \indent Else\\
+\indent \indent \indent {$a \leftarrow a + D_{i,j}$}\\
+\indent \indent End Else \\
+\indent End For\\
+\indent {$j \leftarrow j + 1$} \\
+return {$j$}.
+\subsection*{Algoritmo para exibição da saída estilizada dos vetores de partição}
+É sabido que a saída obtida tanto no MSPC quanto no \emph{Next Partition} diz respeito ao índices de cada subconjunto da partição no conjunto. Para o vetor de partição na posição {$26$} temos a saída {$(0,1,1,0,0)$} e a saída estilizada corresponde a {$(1,4,5)(2,3)$}, indicando que {$1,4$} e {$5$} está no primeiro subconjunto (indicado com o valor {$0$}), com {$2$} e {$3$} no segundo subconjunto (indicado com o valor {$1$} no vetor de partição). Para exibir a saída estilizada, foi usado um vetor de {$strings$} para capturar os elementos adequadamente em cada subconjunto sob o qual ele pertence. Em seguida o algoritmo faz o tratamento da saída de modo que todos os elementos de cada subcojunto fiquem dispostos em função dos elementos do vetor de partição passado como entrada para a saída estilizada do algoritmo.
+\\\\
+\textbf{Algoritmo para saída estilizada dos dados}\\
+Especificações do Algoritmo:
+\begin{itemize}
+\item {$s$}: Vetor de {$strings$} que faz o mapeamento dos elementos referentes aos índices do vetor de partição;
+\item {$p$}: Vetor de partição;
+\item {$i$}: Índice para a varredura do vetor {$s$};
+\item {$r$}: Saída final do algoritmo, em forma de {$string$};
+\item {$n$}: Tamanho do vetor de partição;
+\item {$+$}: Operador de concatenação de {$strings$};
+\item {$k$}: String que captura o elemento atual da saída estilizada;
+\item {$length(w)$}: Função que retorna o tamanho de {$w$}, sendo {$w$} uma {$string$};
+\item {$substring(w,inf,sup)$}: Função que retorna o substring de {$w$}, no intervalo compreendido entre {$inf$} e {$sup$}.
+\end{itemize}
+Rotina:\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$s_{p_i} \leftarrow s_{p_i} + (i + 1) + ","$}\\
+\indent End For\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent If {$length(s_i) > 1$}\\
+\indent \indent \indent {$k \leftarrow substring(s_i$}, {$0$}, {$length(s_i) - 1)$}\\
+\indent \indent End If\\
+\indent \indent {$s_i \leftarrow "(" + k + ")"$}\\
+\indent \indent If {$s_i = "()"$}\\
+\indent \indent \indent {$r \leftarrow r + s_i$}\\
+\indent \indent End If\\
+\indent End For\\
+return r.
+
+\section*{Processo Inverso ao MSPC}
+Com relação ao processo inverso, temos o vetor de partição como entrada e o número serial como saída para o processo inverso ao MSPC. Tal processo é feito tomando cada componente do vetor de partição como o número de laços que efetua uma soma de cada posição específica referente ao nó atual da árvore, mapeado através da Matriz {$D$}. 
+\subsection*{Especificações do Processo Inverso ao MSPC} Inicialmente, temos a atribuição inicial dos índices referentes à Matriz {$D$}. O índice {$u$} tem a atribuição igual a um porque não é necessário fazer o mapeamento na primeira componente da Matriz {$D$}, uma vez que ela sempre é iniciada com zero por ser o principal descendente da árvore. Em seguida, temos um laço externo que percorre todo o vetor de partição passado como entrada, juntamente com outro laço que realiza a soma ao serial das posições chave mapeadas na Matriz {$D$}. Após as atribuições de soma ao serial, temos a verificação se o elemento atual deverá descer uma linha na matriz {$D$} (equivalente a descer um nível na árvore). Caso deva descer um nível, a linha é incrementada em uma unidade e em caso contrário, a coluna em {$D$} é incrementada em uma unidade, indicando a busca dos descendentes no nó atual atingiu seu último filho, fazendo com que a busca seja feita na outra ramificação da árvore.\\\\
+\textbf{Processo Inverso ao MSPC}\\
+Especificações do algoritmo:
+\begin{itemize}
+\item {$p$}: Vetor de partição, dado como entrada;
+\item {$i,j$}: Índices referentes à varredura no vetor {$p$};
+\item {$D$}: Matriz de posições chave da Árvore de Bell;
+\item {$u,v$}: Índices referentes ao mapeamento de {$D$};
+\item {$s$}: Serial da partição, que é o resultado esperado do algoritmo.\\
+\end{itemize}
+Rotina: \\
+\indent {$i \leftarrow j \leftarrow v \leftarrow 0$}\\
+\indent {$s \leftarrow u \leftarrow 1$}\\
+\indent For {$i \leftarrow 1$} to {$n-1$} do\\
+\indent \indent For {$j \leftarrow 0$} to {$p_i - 1$} do\\
+\indent \indent \indent {$s \leftarrow s + D_{u,v}$}\\
+\indent \indent End For\\
+\indent \indent If {$j \leq p_{i-1}$}\\
+\indent \indent \indent {$u \leftarrow u + 1$}\\
+\indent \indent End if\\
+\indent \indent Else\\
+\indent \indent \indent {$v \leftarrow v + 1$}\\
+\indent \indent End Else \\
+\indent End For \\
+return s.\\
+
+
+%===========================BIBLIOGRAFIA==============================================
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A. ~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Bell Trees, (Incluir local de publicação),2004.
+\end{thebibliography}
+\end{document}

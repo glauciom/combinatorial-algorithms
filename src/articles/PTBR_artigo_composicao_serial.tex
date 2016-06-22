@@ -1,0 +1,298 @@
+\documentclass{amsart}
+\usepackage[portuges]{babel}
+\selectlanguage{portuges}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+
+\begin{document}
+\title[Método de Composição Serial]
+ {Método de Composição Serial}
+
+%=====================================Title=================================================
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estatística e Informática - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estatística e Informática - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+%=========================================================================
+\keywords{Algoritmos Combinatoriais, Complexidade Computacional,
+Otimização Combinatorial, Composição}
+%=========================================================================
+
+\begin{abstract}
+Este artigo apresenta o \emph{Método de Composição Serial} (MCS).
+A proposta do MCS está em obter o vetor de composição de um
+inteiro {$n$} em {$k$} partes a partir do seu número de série.
+Também é apresentado o método que realiza o processo inverso ao
+MCS, obtendo o número serial a partir do vetor de composição. O
+artigo termina com a demonstração das propriedades combinatoriais
+presentes no material aqui exposto.
+\end{abstract}
+%=========================================================================
+\maketitle
+%=========================================================================
+
+\section*{Introdução}
+
+Na família combinatorial, a composição de um inteiro {$n$} em
+{$k$} partes é definido por:
+
+\begin{equation}
+n = r_1 + r_2 + ... + r_k \indent r_i \geq 0 \indent i=1..k
+\end{equation}
+onde a ordem dos elementos é importante na geração das
+composições. O algoritmo \emph{Next Composition} \cite{wi} realiza
+a tarefa de gerar as composições, obtendo a próxima composição a
+partir da anterior, funcionando iterativamente até atingir a
+última composição da lista. A proposta do método descrito no
+presente artigo é a obtenção desses vetores a partir de sua
+posição na lista, sem haver a necessidade de processar as
+composições uma a uma até atingir o vetor esperado.
+
+\section*{Construção do MCS}
+
+ O MCS foi construído a partir dos padrões de repetição
+ presentes nos vetores de composição ao longo de toda a sua lista.
+ Pode-se observar que essa repetição se efetua em posições chave
+ na lista de composições, podendo ser obtidas por meio de cálculo.
+ Essa característica dos vetores de composição é que torna
+ possível o salto entre as posições chave na lista, diminuindo
+ dessa forma o número de iterações necessárias para se encontrar o
+ vetor de uma posição especificada. O cálculo das posições chave é
+ definido a seguir.
+
+\subsection*{Definições usadas na construção do MCS}
+
+ É sabido que o número total de composições de {$n$} em {$k$} partes é
+ definido por:
+
+\begin{equation} \label{eq1}
+J(n,k) = \left(
+\begin{array}{ccc}
+n + k -1 \\
+n\\
+\end{array} \right)
+\end{equation}
+Sabe-se também que:
+\begin{equation} \label{eq2}
+\sum_{i=0}^{k} \left(
+\begin{array}{ccc}
+n - i \\
+k - i \\
+\end{array} \right) =
+\left(
+\begin{array}{ccc}
+n + 1 \\
+k\\
+\end{array} \right) \;
+\end{equation}
+Associando \ref{eq1} e \ref{eq2} temos:
+\begin{equation} \label{eq3}
+\sum_{i=0}^{n} \left(
+\begin{array}{ccc}
+n + k - 2 - i \\
+n - i \\
+\end{array} \right) =
+\left(
+\begin{array}{ccc}
+n + k -1 \\
+n\\
+\end{array} \right) \;
+\end{equation}
+
+Para um vetor de composição {$c$} de tamanho {$k$} da lista de
+composições {$L$}, a modificação do {$k$}-ésimo elemento em {$L$}
+é determinado pelo índice do somatório parcial definido na equação
+\ref{eq3}. Dessa forma, pode-se saber quando uma componente de
+{$c$} deixa de repetir seu elemento corrente para sofrer
+modificações. Tomando como base a equação \ref{eq3}, podemos
+visualizar essa mudança de índice com a definição da matriz {$M$},
+disposta em \ref{eq4}.
+
+\begin{equation} \label{eq4}
+M(n,k) = \left(
+\begin{array}{cccc}
+%primeira linha
+\left(\begin{array}{ccc}n + k -2 \\n\\\end{array} \right) &
+\left(\begin{array}{ccc}n + k -3 \\n-1\\\end{array} \right) &
+\ldots &
+\left(\begin{array}{ccc} k - 2 \\0\\\end{array} \right)\\\\
+%Segunda linha
+\left(\begin{array}{ccc}n + k -3 \\n\\\end{array} \right) &
+\left(\begin{array}{ccc}n + k -4 \\n-1\\\end{array} \right) &
+\ldots &
+\left(\begin{array}{ccc} k - 3 \\0\\\end{array} \right)\\
+\vdots & \vdots & \ddots &\vdots\\
+%Segunda linha
+\left(\begin{array}{ccc}n\\n\\\end{array} \right) &
+\left(\begin{array}{ccc}n -1\\n-1\\\end{array} \right) & \ldots &
+\left(\begin{array}{ccc}0\\0\\\end{array} \right)\\
+\end{array} \right)
+\end{equation} \\
+
+A matriz definida em \ref{eq4}, possui as seguintes propriedades:
+
+        \begin{itemize}
+        \item Cada linha de {$M$} corresponde aos elementos
+        do somatório da equação \ref{eq3};
+        \item De uma linha para outra, o elemento superior do
+        binomial é decrementado em uma unidade;
+        \item {$M$} possui {$k-1$} linhas e {$n+1$} colunas.
+        \end{itemize}
+
+Agora vejamos a seguir como {$M$} é usada para representar a
+execução do MCS.
+
+\subsection*{Descrição da Varredura da Matriz M}
+
+Inicialmente, temos como informação inicial o número de série da
+composição na lista, para obtenção do vetor de composição. Seja
+{$s$} o serial referente à variável de entrada do método para um
+vetor de composição de tamanho {$k$}. Os elementos da primeira
+linha de {$M$} são somados até que essa soma extrapole {$s-1$}.
+Quando se encontra um valor na soma superior a {$s-1$}, o valor
+correspondente à coluna em que se encontra o elemento somado
+imediatamente anterior ao atual é atribuído ao último elemento do
+vetor de composição a ser encontrado. Após encontrar o último
+elemento (as atribuições de cada elemento do vetor de composição
+são feitas do final para o começo, até o segundo elemento do vetor
+de composição) o próximo elemento, isto é, o penúltimo elemento do
+vetor de composição é encontrado em {$M$} descendo em diagonal
+para a próxima linha de {$M$}, realizado um reinício da contagem
+dos índices a partir da coluna atual. Isso é feito de modo
+sucessivo, até que a soma dos elementos que foram visitados em
+{$M$} seja igual a {$s-1$}. Vejamos um exemplo dessa estratégia em
+uma matriz {$M(7,5)$} com o serial {$s-1 = 282$}, ilustrado em
+\ref{eq5}. O resultado da varredura é o vetor de composição
+{$c(283)= \{1,0,2,1,3\}$}. Note que o primeiro elemento do vetor
+não precisa ser calculado usando {$M$}, uma vez que ele pode ser
+obtido a partir do complemento da soma dos elementos já
+encontrados através da varredura efetuada em {$M$}. Temos em
+\ref{eq5} na primeira linha com o somatório parcial chegando até o
+terceiro elemento (aloca-se o numero 3 na última posição da
+lista), a segunda linha com apenas um elemento do somatório
+parcial (aloca-se o numero 1 na penúltima posição da lista), e
+assim sucessivamente. A soma dos números sublinhados em \ref{eq5}
+convergem para {$s-1$}.
+
+\begin{equation} \label{eq5}
+M(7,5) = \left(
+\begin{array}{cccccccc}
+\textbf{\underline{120}} & \textbf{\underline{84}} & \textbf{\underline{56}} & 35 & 20 & 10 & 4 & 1 \\
+        36 & 28 & 21 & \textbf{\underline{15}} & 10 & 6 & 3 & 1\\
+        8 & 7 & 6 & 5 & \textbf{\underline{4}} & \textbf{\underline{3}} & 2 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\end{array} \right)
+\end{equation} \\
+
+\section*{Descrição do MCS}
+
+Em termos de implementação, o algoritmo aqui proposto para o MCS
+abstrai a estrutura da matriz {$M$}, definida na seção anterior,
+fazendo uso apenas dos índices referentes ao método de varredura
+de {$M$}. O laço é percorrido conforme definido, atribuindo ao
+primeiro elemento do vetor de composição o valor correspondente ao
+complemento das soma dos elementos posteriores. Na sub-rotina
+\emph{element} temos o procedimento de obtenção de cada elemento
+do vetor de composição.
+\\\\
+\textbf{Método de Composição Serial (MCS)} \\\\
+        Especificações do Algoritmo:
+        \begin{itemize}
+        \item {$n$}: Número da composição (Composição de {$n$} elementos em {$k$}
+        partes);
+        \item {$k$}: Partes da composição;
+        \item {$s$}: Serial da composição;
+        \item {$a$}: variável auxiliar que realiza o incremento para convergência do número
+        serial;
+        \item {$x,y$}: Variáveis auxiliares, para definição dos novos índices do
+        binomial;
+        \item {$C_{i,j}$}: Combinação de {$i$} elementos {$j$} a
+        {$j$};
+        \item {$z$}: Valor de complementação, usado para atribuir o valor ao primeiro elemento do vetor de composição.
+        \end{itemize}
+        Rotina:
+        \\
+        \indent {$z \leftarrow a \leftarrow 0$} \\
+        \indent {$x \leftarrow n + k - 2$}\\
+        \indent {$y \leftarrow n$}\\
+        \indent Para {$i \leftarrow 0$} até {$k-2$} faça\\
+        \indent \indent {$c_{k-1-i} \leftarrow element $}\\
+        \indent \indent {$z \leftarrow z + c_{k-1-i}$}\\
+        \indent Fim Para\\
+        \indent {$c_0 \leftarrow n - z$}\\
+        retorne {$c$}.\\
+    Sub-rotina element \\
+    \indent Para {$j \leftarrow 0$} até {$n-1$} faça\\
+    \indent \indent Se {$a + C_{x-i-j,y-j} \leq s-1$}\\
+    \indent \indent \indent {$a \leftarrow a +  C_{x-i-j,y-j}$}\\
+    \indent \indent Fim Se\\
+    \indent \indent Senão\\
+    \indent \indent \indent {$x \leftarrow x - j$}\\
+    \indent \indent \indent {$y \leftarrow y - j$}\\
+    \indent \indent \indent retorne {$j$}.\\
+    \indent \indent Fim Senão\\
+  \indent Fim Para \\
+    retorne {$n$}.\\
+    Fim Sub-Rotina Element.
+
+\section*{Descrição do Processo Inverso ao MCS}
+
+No que diz respeito ao processo inverso ao MCS, temos como cenário
+atual a obtenção do número serial da composição, tendo como
+entrada de dados o vetor de composição de um número {$n$} em {$k$}
+partes. No caso em mãos, cada componente do vetor de composição é
+vista como partes de intervalos superiores de um laço aninhado a
+outro, que por sua vez efetua a varredura no vetor de composição.
+O processo inverso possui uma entrada de dados concisa em relação
+a entrada de dados do MCS, uma vez que o processo inverso não
+trabalhará sob o esquema de convergência de valores de um número
+serial: tudo já está bem determinado nas componentes do vetor de
+composição, bastando apenas processar laços com iterações
+relativas a cada componente do vetor de composição dado como
+entrada.
+
+Analogamente ao MCS, o algoritmo proposto para o processo inverso
+ao MCS trabalha apenas com índices referentes à matriz definida no
+MCS. O uso dos índices abstraindo a estrutura da matriz reduz o
+uso de memória e processa apenas o necessário para o cálculo do
+caminho a
+ser percorrido na matriz {$M$}. \\\\\textbf{Método de Composição Serial (Processo Inverso)}\\\\
+Especificações do Algoritmo:
+    \begin{itemize}
+        \item {$n$}: Número da composição (Composição de {$n$} elementos em {$k$}
+        partes);
+        \item {$k$}: Partes da composição;
+        \item {$s$}: Serial da composição;
+        \item {$x,y$}: Variáveis auxiliares, para definição dos novos índices do
+        binomial;
+        \item {$C_{i,j}$}: Combinação de {$i$} elementos {$j$} a
+        {$j$}.
+        \end{itemize}
+        Rotina:
+        \\
+        \indent {$x \leftarrow n + k -2$} \\
+        \indent {$y \leftarrow n$} \\
+        \indent {$s \leftarrow 1$} \\
+        \indent Para {$i \leftarrow k-1$} até {$1$} faça \\
+        \indent \indent Para {$ j \leftarrow 0$} até {$c_i -1$} faça \\
+        \indent \indent \indent {$s \leftarrow s + C_{x-j-[(k-1)-i],y-j}$} \\
+        \indent \indent Fim Para \\
+        \indent \indent {$x \leftarrow x - c_i$} \\
+        \indent \indent {$y \leftarrow y - c_i$} \\
+        \indent Fim Para \\
+        \indent retorne s. \\
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\end{thebibliography}
+\end{document}
+
+\end{document}

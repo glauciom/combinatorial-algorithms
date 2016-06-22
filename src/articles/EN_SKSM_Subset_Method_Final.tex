@@ -1,0 +1,264 @@
+%===============================Serial KNSubset Method=====================================
+\documentclass {amsart}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+%=================================Preamble ends here========================================
+
+
+\begin{document}
+\title[Serial {$k$}-Subset of an {$n$}-Set Method]
+ {Serial {$k$}-Subset of an {$n$}-Set Method}
+%=====================================Title=================================================
+
+
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+
+
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+
+\keywords{Combinatorial Algorithms, Complexity, Combinatorial
+Optimization, k-Subsets}
+%===================================Key Words===============================================
+
+
+\begin{abstract}
+This article presents the \emph{Serial {$k$}-Subset of an
+{$n$}-Set Method} (SKSM). The SKSM proposal is to obtain a
+{$k$}-subset vector of an {$n$}-set vector from its serial number.
+The algorithm that does the SKSM's inverted process is also
+showed, getting the serial number from the {$k$}-subset vector.
+The article ends with the demonstration of the method exposed
+here.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+We call {$\big({n \atop k}\big)$} the number of possibilities to
+combine {$n$} things on {$k$} different parts. On analyzed
+literature\cite{wi}, we have two ways to do this work on a
+sequential form. The first method builds the {$k$}-subsets in a
+lexicographic order and the second method obtains the next subset
+from its predecessor, subtracting one element of the set and
+adding on other element of the subset.
+
+The proposal of this article is presents a method that, put in
+action iteratively, it creates a list in a lexicographic order 
+given as input the position on the list of possible combinations.
+This strategy is more efficient when we desire to get a
+combination on a specific position inside the whole list of
+combinations.
+
+\section*{Getting the combinations on lexicographic order}
+
+The algorithm \emph{Next {$k$}-subset of an {$n$}-Set}\cite{wi} is
+able to create on a simple way the combinations in lexicographic
+order in a non-recursive way. The recursive model of this
+algorithm will be shown on this section optionally. The current
+combination of the recursive model is showed through the
+{$showOutput$} method, that is indicating here an output model of
+generic data for a combination that is going to have as output
+elements that can vary between {$0$} and {$n-1$}. The call to
+begin the routine must be done on a {$Combine(0)$} way, taking as
+stopped of the recurrence, the moment that the parameter did {$k$}
+recurrences. Next, we have a recursive model of the algorithm,
+without taking longer on its construction.\\\\
+\textbf{Recursive {$k$}-subset of an {$n$}-Set Algorithm}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$k$}: Dimension of the subset;
+
+\item {$s$}: Subset vector;
+
+\item {$n$}: Set's cardinality;
+
+\item {$y$}: Auxiliary vector that determines the changes of {$n$}
+set elements in subset {$k$}.
+
+\end{itemize}
+Routine:\\
+\indent {$Combine(i)$} \\
+\indent \indent For {$s_i \leftarrow sum(i,i,0)$} to {$n-(k-i)$} do \\
+\indent \indent \indent If {$i \neq k-1$} \\
+\indent \indent \indent \indent {$Combine(i+1)$} \\
+\indent \indent \indent Else \\
+\indent \indent \indent \indent {$showOutput$}\\
+\indent \indent \indent End If-Else\\
+\indent \indent End For\\
+\indent \indent {$y_{i+1} \leftarrow 0$}\\
+\indent \indent {$y_i \leftarrow y_i + 1$}\\
+\indent End Combine. \\\\
+\indent Subroutine {$sum(w,j,z)$}\\
+\indent \indent For {$i \leftarrow 0$} to {$j$} do \\
+\indent \indent \indent {$z \leftarrow z +  y_i$} \\
+\indent \indent End For \\
+\indent \indent return {$z+w$}.\\
+\indent End {$sum$}.
+
+\section*{SKSM Construction}
+
+To build the SKSM, we observe the data output of the subsets' list
+created by the \emph{Next {$k$}-subset of an {$n$}-Set} algorithm,
+characterizing the repetition's pattern in the elements of subset.
+In this case, the pattern can be delineated under a tree model.
+The formation law of this tree is showed below.
+
+\subsection*{Definition of the Binomial Tree}
+
+The structure that represents the repetition's pattern is
+characterized as a tree formed exclusively
+by binomial coefficients.
+Let {$\big({n\atop k}\big)_{w}$} be the current node of the tree
+with {$w$} label, its descendants are defined by
+\begin{equation}
+\bigg({n\atop k}\bigg)_{w} \rightarrow \left\{
+\begin{array}{l}
+\Big({n-1\atop k-1}\Big)_{w+1}\\
+\\
+\Big({n-2\atop k-1}\Big)_{w+2}\\
+\indent \vdots \\
+\Big({n-k+1\atop k-1}\Big)_{w + n - k + 1}\\
+\end{array} \right.
+\end{equation}\\
+
+Each ascendant will have {$n + k -1$} descendants, and the
+repetition's pattern of combinations are analyzed through the
+insertion of labels in each node of the tree. For each label of
+the current node, the descendants nodes enter its labels in
+relation to the ascendant node, indicating the value from each
+element of the subset founded on the tree.
+
+\subsection*{SKSM Specifications}
+
+The SKSM abstracts the construction of the tree, doing the search
+calculating only the binomial coefficients and its relations with
+the nodes' labels that were visited on the search. The method does
+an external loop attributing to each element of the subset the
+result of the subroutine {$element$}. The subroutine {$element$}
+does a search on the tree's nodes. The abstraction of the tree is
+made through the indices changes of the binomial coefficient
+attributed on {$x$} and {$y$}. The method is described below.\\\\
+\textbf{Serial {$k$}-Subset of an {$n$}-Set Method}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$p$}: {$k$}-dimensional Subset;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$a$}: Auxiliary variable that is used to check the stopped
+of the method;
+
+\item {$x,y$}: Indices of the binomial coefficients functioning as
+the formation law of the Binomial Tree;
+
+\item {$r$}: Variable that controls the labels of Binomial Tree;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\item {$C_{n,k}$}: {$\big({n\atop k}\big)$}.
+
+\end{itemize}
+Routine:\\
+\indent {$x \leftarrow n$} \\
+\indent {$y \leftarrow k-1$}\\
+\indent {$a \leftarrow r \leftarrow 0$}\\
+\indent For {$i \leftarrow 0$} to {$k-1$} do\\
+\indent \indent {$p_i \leftarrow element$}\\
+\indent End For\\
+return {$p$}.\\
+End SKSM Routine.\\\\
+Subroutine {$element$}\\
+\indent For {$j \leftarrow 1 $} to  {$x - y + 1$} do \\
+\indent \indent If {$a + C_{x-j,y} < s$}\\
+\indent \indent \indent {$a \leftarrow a + C_{x-j,y}$}\\
+\indent \indent Else\\
+\indent \indent \indent {$x \leftarrow x - j$}\\
+\indent \indent \indent {$y \leftarrow y - 1$}\\
+\indent \indent \indent {$r \leftarrow r + j$}\\
+\indent \indent \indent return {$r$}.\\
+\indent \indent End If-Else\\
+\indent End For\\
+return {$r$}.\\
+End Subroutine {$element$}.
+
+\section*{Inverted process of the SKSM}
+
+As many others serial methods from others combinatorial problems
+with same importance\cite{me}\cite{me1}\cite{me2}, the SKSM also
+has its inverted process. What is giving as input is the vector
+that represents the {$k$}-dimensional subset with the cardinality
+of the set, called {$n$}, getting as output its position (i.e. the
+serial number) on the subsets list in a lexicographic order.
+
+
+\subsection*{SKSM Inverse Process Specifications}
+
+On the inverted SKSM process, it is taken as the maximum limit of
+the internal loop is the difference between the elements of the
+subset. This will determine how much the loop will repeat related
+to the elements of the subset. The indices of the binomial
+coefficient do an appropriate control for the adding among the
+nodes be made correctly. The inverted process also abstract the
+tree's structure, getting the result by means of local information
+related to the subset given as input.\\\\
+\textbf{Serial {$k$}-Subset of an {$n$}-Set Method (Inverted
+Process)}
+
+Algorithm Specifications:
+\begin{itemize}
+\item {$p$}: {$k$}-dimensional Subset;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$x,y$}: Indices of the Binomial Coefficients;
+
+\item {$r$}: Variable that will control the internal loop of the
+method;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\item {$C_{n,k}$}: {$\big({n\atop k}\big)$}.
+
+\end{itemize}
+Routine:\\
+\indent {$x \leftarrow n$}\\
+\indent {$y \leftarrow k-1$}\\
+\indent {$s \leftarrow 1$}\\
+\indent {$r \leftarrow 0$}\\
+\indent For {$i \leftarrow 0$} to {$k-1$} do \\
+\indent \indent For {$j \leftarrow 1$} to {$p_i - r - 1$} do\\
+\indent \indent \indent {$s \leftarrow s + C_{x-j,y}$}\\
+\indent \indent End For\\
+\indent \indent {$x \leftarrow x - (p_i - r)$}\\
+\indent \indent {$y \leftarrow y - 1$}\\
+\indent \indent {$r \leftarrow p_i$}\\
+\indent End For\\
+return s.
+
+\section*{Demonstration}
+(This section is not ready)
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Permutation Method,
+(Not published yet),2004.
+\bibitem{me1} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Composition Method,
+(Not published yet),2004.
+\bibitem{me2} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Partition of an n-Set Method,
+(Not published yet),2004.
+\end{thebibliography}
+\end{document}

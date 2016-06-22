@@ -1,0 +1,185 @@
+%===============================Serial Subset Method=====================================
+\documentclass {amsart}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+%=================================Preamble ends here========================================
+
+
+\begin{document}
+\title[Serial Subset Method]
+ {Serial Subset Method}
+%=====================================Title=================================================
+
+
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estatística e Informática - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+
+
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estatística e Informática - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+
+\keywords{Combinatorial Algorithms, Complexity, Combinatorial
+Optimization, Subsets}
+%===================================Key Words===============================================
+
+
+\begin{abstract}
+This article presents the \emph{Serial Subset Method} (SSM). The
+SSM proposal is to obtain a subset vector from its serial number.
+The algorithm that does the SSM's inverted process is also showed,
+getting the serial number from the subset vector. The article ends
+with the demonstration of the method exposed here.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+Para obter os subsets de um conjunto {$\{1,2,\ldots,n\}$}, temos
+{$2^n$} configurações possíveis. As disposições dos elementos no
+subconjunto pode ser representado por uma flag que ative sua
+inserção no subconjunto. Por exemplo, a configuração
+{$\{1,0,1,1,0\}$} representa o subset {$\{1,3,4\}$}. O algoritmo
+\emph{Next Subset of an {$n$}-Set}\cite{wi} realiza este trabalho
+de forma seqüencial, retornando o próximo subset a partir do
+subset atual.
+
+O objetivo deste artigo é apresentar um método que retorna o
+subset de um {$n$}-Set a partir de sua posição na lista de
+subsets. O processo inverso deste método também é apresentado,
+capturando a posição da lista a partir do subset.
+
+\section*{Construção do SSM}
+O SSM foi construído a partir da observação do padrão de repetição
+que os subsets apresentam ao longo da lista completa de subsets.
+De modo similar ao \emph{Serial Permutation Method}\cite{me}
+quanto ao padrão de repetição do offset vector, o SSM possui um
+padrão regular de repetição, podendo capturar cada componente do
+subset por meio de uma equação fechada.
+
+Seja {$p$} o subset de um set de {$n$} elementos, cada componente
+do subset com índice {$k = 0,1,\ldots,n-1$} com relação a um
+número serial {$s = 1,2,\ldots,2^n$} é definido por
+
+\begin{equation}    \label{eqt}
+p_k = \displaystyle\biggl\lfloor\frac{(s-1 + 2^k) ~mod~
+2^{k+2}}{2^{k+1}}\displaystyle\biggl\rfloor
+\end{equation}
+
+A equação em \ref{eqt} merece algumas considerações, já que a
+mesma não apresenta restrições na representação do padrão. Cada
+componente {$p_k \in \{0,1\}$} e em {$(s-1 + 2^k)$}, o {$2^n$}
+está relacionado com a estrutura cíclica que os números apresentam
+ao longo da lista. Tal peculiaridade é facilmente identificada na
+saída de dados do algoritmo \emph{Next Subset of an
+{$n$}-Set}\cite{wi}, como também no algoritmo aqui proposto.
+
+\subsection*{SSM Specifications}
+Quanto à especificação do SSM, temos um loop que apenas realiza
+uma associação entre a equação mostrada em \ref{eqt} e a estrutura
+que representa o subset no método. O método retorna o subset
+relacionado com o serial dado como entrada, onde o número {$1$} na
+saída de dados indica que componentes do subset estarão
+ativados, conforme explicado na introdução deste artigo.\\\\
+\textbf{Serial Subset Method}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$p$}: Subset of {$n$}-Set;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\end{itemize}
+Routine:\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$p_i \leftarrow \lfloor ((s-1 + 2^i) ~mod~
+2^{i+2})~/~2^{i+1}\rfloor$}\\
+\indent End For\\
+return {$p$}.\\
+End Routine.
+
+\section*{SSM Inverted Method}
+Nesta seção será mostrado o processo inverso do SSM. O que é dado
+como entrada é o subset e o que é processado como saída é a sua
+posição correspondente na lista de subsets. No caso em mãos, temos
+que determinar qual é o momento de caminhar entre as posições
+específicas do padrão de repetição identificado nos subsets. O
+processo inverso para subsets também possui similaridades com o
+processo inverso do \emph{Serial Permutation Method}\cite{me}. A
+lista de subsets, de trás para frente, apresenta uma sequência de
+{$0$}'s e {$1$}'s, nessa ordem. A partir daí, a lista para análise
+do próximo componente do subset pode ficar invertida no caso deste
+elemento do subset ser igual a {$1$}, e com isso não se pode
+avançar na lista para convergência do valor do serial desejado. Em
+caso contrário, o valor do serial é alterado de forma iterativa
+por entre as posições específicas da lista até encontrar o serial
+correspondente ao subset passado como entrada.
+
+
+
+\subsection*{SSM Specifications}
+Na especificação do SSM, foi definida uma varíavel lógica para
+definir se a lista sob o qual a componente atual do subset está
+sendo verificada é normal ou invertida, definindo como {$true$}
+para as listas normais e {$false$} para listas invertidas,
+começando inicialmente como {$true$}, uma vez que a disposição das
+componentes está sendo analisada de trás para frente. O valor
+inicial do serial é inicializado com {$1$}. Em seguida, um laço
+efetuado de forma descendente realiza as verificações em cada
+componente do subset, a fim de determinar se ele avançará ou não
+na convergência para o resultado. Observou-se que tal condição do
+modo como foi construída pode ser representado apenas pelo
+conectivo lógico de \emph{ou exclusivo}, comumente denotado pelo
+operador {$xor$}. Quando a condição {$xor$} é satisfeita, a
+varíavel lógica é ativada como {$true$}, indicando que a próxima
+componente está inclusa em uma lista direta. Em caso contrário, o
+serial avança mais uma posição específica, e a lista é setada para
+uma lista invertida. A rotina do método é especificada a seguir.\\\\
+\textbf{Serial Subset Method (Inverted Process)}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$p$}: Subset of {$n$}-Set;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\item {$d$}: Logical variable, which indicates if the list of
+subsets is on direct or inverted order.
+
+\end{itemize}
+Routine:\\
+\indent {$s \leftarrow 1$}\\
+\indent {$d \leftarrow true$}\\
+\indent For {$i \leftarrow n-1$} down to {$0$} do\\
+\indent \indent If {$(p_i = 1 ~xor~ d) = true$}\\
+\indent \indent \indent {$d \leftarrow true$}\\
+\indent \indent Else\\
+\indent \indent \indent {$d \leftarrow false$}\\
+\indent \indent \indent {$s \leftarrow s +  2^i$}\\
+\indent \indent End If-Else\\
+\indent End For\\
+return {$s$}.\\
+End Routine.
+
+
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M.,
+OLIVEIRA-LIMA, Emerson A. de O. Serial Permutation Method, (Not
+published yet),2004.
+\end{thebibliography}
+\end{document}

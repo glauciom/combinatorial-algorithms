@@ -1,0 +1,608 @@
+%===============================Serial Permutation Method (SPM)=============================
+\documentclass {amsart}
+\usepackage{color}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+\newcommand{\azero}{\textcolor{blue}{0}}
+\newcommand{\aum}{\textcolor{blue}{1}}
+\newcommand{\adois}{\textcolor{blue}{2}}
+\newcommand{\rzero}{\textcolor{red}{0}}
+\newcommand{\rum}{\textcolor{red}{1}}
+\newcommand{\rdois}{\textcolor{red}{2}}
+%=================================Preamble ends here========================================
+\begin{document}
+\title[Serial Permutation Method]
+ {Serial Permutation Method}
+%=====================================Title=================================================
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+\keywords{Combinatorial Algorithms, Complexity, Combinatorial
+Optimization, Permutation}
+%===================================Key Words===============================================
+\begin{abstract}
+This article presents the \emph{Serial Permutation Method} (SPM).
+The SPM proposal is to obtain a permutation vector from its serial
+number. The algorithm that does the SPM's inverted method is also
+showed, getting the serial number from the permutation vector. %The
+%article ends with the demonstration of the method offered here.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+The permutation algorithms are classified in two groups: the one
+that creates a set of permutations from the identity permutation
+and the other that produces a set of permutations by means of
+simple changes between the vector's elements, creating a new
+permutation from the previous one. The algorithm \emph{Next
+Permutation for N letters} \cite{wi} belongs to the second group,
+creating a complete set of permutations through successive
+algorithm invocation, getting the next permutation until reaches
+the last vector of the list. The algorithm \emph{Next Permutation}
+is powerful creating the next permutation vector using only local
+information. This guarantees that the next vector will be
+different from anyone else that was defined before.
+
+There is a specific problem on this creating process:
+\begin{quote}
+\emph{Is it possible to get directly a permutation vector located
+on a specific position on the list of vectors, excluding the
+alternative of the Next Permutation algorithm's successive
+execution until gets the desired vector?}
+\end{quote}
+
+The \emph{Serial Permutation Method} (SPM) answers this question,
+being able to process the same list of permutation that the
+\emph{Next Permutation} algorithm does, with a difference: the SPM
+only needs the serial number and the permutation vector's size to
+process the desired output. It is also possible to invert this
+process from the SPM, getting the serial number through the
+permutation vector.
+%===========================Construction====================================================
+\section*{SPM Construction}
+%===========================================================================================
+The SPM was developed from the observation of the \emph{Next
+Permutation's} data outputs. This algorithm has an auxiliary
+variable called offset vector, which is defined below \cite{wi}.
+
+Consider {$p$} the permutation vector with {$n$} elements and let
+{$d$} be the offset vector with {$n - 1$} elements, the vector
+{$d$} is defined by:
+\begin{equation} \label{eq}
+    d_i = |j: j \leq i, ~p_j > p_{i+1}| ~~i = 1, 2, ... ,n
+\end{equation}
+That is explained:
+\begin{quote}
+\emph{How many numbers are there biggest than {$p_{i+1}$} between
+the beginning of the permutation vector and the {$i$} index of the
+{$d$} vector?}
+\end{quote}
+
+Being {$n!$} the complete list of the created vectors, we have in
+Table \ref{tab_1} an example of output from the {$p$} permutation
+vector related to its serial, for {$n = 5$} and the {$serial =
+32$}.
+\begin{table}[!hbp]
+  \centering
+  \caption{Input and output processing that are common in the \emph{Next Permutation} algorithm.}
+  \label{tab_1}
+\begin{tabular}{c|c}
+ \hline
+  Input & Output \\
+  \hline
+  {$n = 5$} & {$p = (3, 5, 1, 2, 4)$} \\
+  {$Serial = 32$} & {$d = (0, 2, 2, 1)$} \\
+  \hline
+ \end{tabular}
+\end{table}
+
+The SPM is subdivided in two steps, and the data input of the
+second step corresponds to the data output of the first step:
+\begin{enumerate}
+\item  Given a serial number and the size of the permutation
+vector, determine the offset vector;
+\item Given the offset vector,
+determine the permutation vector.
+\end{enumerate}
+%=========================Serial Offset Algorithm===========================================
+\subsection*{Algorithm to Attain the Offset Vector}
+%===========================================================================================
+To solve the first SPM step it is necessary an algorithm to get
+the offset vector, which is called \emph{Serial Offset Algorithm}
+(SOA). The algorithm does a calculus that reflects the pattern of
+the offset vectors' creation throughout the whole list of
+permutation, using only local information. In Table \ref{table},
+we can visualize the pattern of the offset vector in the whole
+list of permutation, where the detached column will serve as a
+guide to the determination that the SOA decodes.
+\begin{table}
+  \centering
+  \caption{Full list of permutations, with {$n = 4$}}
+  \label{table}
+\begin{tabular}{c|c|c}
+ \hline
+   Serial  &p  &d\\
+ \hline
+    1   &(1,2,3,4)  &(0,\azero,0)\\
+  \hline
+    2   &(2,1,3,4)  &(1,\azero,0)\\
+  \hline
+    3   &(3,1,2,4)  &(1,\aum,0)\\
+  \hline
+    4   &(1,3,2,4)  &(0,\aum,0)\\
+  \hline
+    5   &(2,3,1,4)  &(0,\adois,0)\\
+  \hline
+    6   &(3,2,1,4)  &(1,\adois,0)\\
+  \hline
+    7   &(4,2,1,3)  &(1,\rdois,1)\\
+  \hline
+    8   &(2,4,1,3)  &(0,\rdois,1)\\
+  \hline
+    9   &(1,4,2,3)  &(0,\rum,1)\\
+  \hline
+    10  &(4,1,2,3)  &(1,\rum,1)\\
+  \hline
+    11  &(2,1,4,3)  &(1,\rzero,1)\\
+  \hline
+    12  &(1,2,4,3)  &(0,\rzero,1)\\
+  \hline
+    13  &(1,3,4,2)  &(0,\azero,2)\\
+  \hline
+    14  &(3,1,4,2)  &(1,\azero,2)\\
+  \hline
+    15  &(4,1,3,2)  &(1,\aum,2)\\
+  \hline
+    16  &(1,4,3,2)  &(0,\aum,2)\\
+  \hline
+    17  &(3,4,1,2)  &(0,\adois,2)\\
+  \hline
+    18  &(4,3,1,2)  &(1,\adois,2)\\
+  \hline
+    19  &(4,3,2,1)  &(1,\rdois,3)\\
+  \hline
+    20  &(3,4,2,1)  &(0,\rdois,3)\\
+  \hline
+    21  &(2,4,3,1)  &(0,\rum,3)\\
+  \hline
+    22  &(4,2,3,1)  &(1,\rum,3)\\
+  \hline
+    23  &(3,2,4,1)  &(1,\rzero,3)\\
+  \hline
+    24  &(2,3,4,1)  &(0,\rzero,3)\\
+  \hline
+ \end{tabular}
+\end{table}
+Let {$d$} be the offset vector with {$n$} elements. Each vector's
+{$d$} column showed in Table \ref{table} has the following
+properties:
+\begin{itemize}
+\item Let {$k$} be the value of the current column ({$k = 1, 2,
+..., n$}), the elements of the {$d_k$} column ({$0 \leq d_k \leq
+k$}) repeat {$k!$} times until the element of the column gets the
+{$k$} value. This can be visualized on the first part of the
+detached column in Table \ref{table}, illustrated in blue, which
+the number of detached elements in blue or red is defined by {$(k
++ 1)!$} \item When {$d_k = k$} in {$k!$} times, the following
+elements from the list are put on the inverted form, like showed
+in red in Table \ref{table}. The direct and inverted list
+intercalate themselves until complete all the positions of the
+column.
+\end{itemize}
+
+Exists throughout each offset vector column an intercalation
+between the two kinds of lists (direct and inverted), we can
+consider this fact as an element of parity in the list,
+considering as an even the list in its direct form and as odd the
+list in its inverted form. To determinate the relation between the
+serial number and the parity of the list, follows:
+\begin{equation}
+f =
+\displaystyle\biggl\lfloor\frac{s-1}{(k+1)!}\displaystyle\biggl\rfloor
+~mod~2
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item {$f$}: Determines if the list is direct {$(f = 0)$} or inverted {$(f = 1)$};
+    \item {$s$}: Serial number;
+    \item {$k$}: Index of the offset vector;
+    \item {$\lfloor x \rfloor$}: Floor function. It returns the biggest integer value smaller than {$x$};
+    \item {$mod$}: An operation that returns a division's rest.
+\end{itemize}
+
+If the list had been direct, we attribute to the elements of the
+offset vector:
+
+\begin{equation}    \label{eqt}
+d_k = \displaystyle\biggl\lfloor\frac{[(s-1) ~mod~
+(k+1)!]}{k!}\displaystyle\biggl\rfloor
+\end{equation}
+
+If the list had been inverted, we attribute the complement which
+would be the direct list:
+
+\begin{equation}    \label{eqq}
+d_k = k - \displaystyle\biggl\lfloor\frac{[(s-1) ~mod~
+(k+1)!]}{k!}\displaystyle\biggl\rfloor
+\end{equation}
+
+Each attribution is made through a loop that go through the offset
+vector.
+\newline\newline
+\textbf{Serial Offset Algorithm (SOA)}
+\newline
+Routine Specifications:
+\begin{itemize}
+    \item {$n$}: Size of the offset vector;
+    \item {$i$}: Index of the offset vector;
+    \item {$d$}: Offset vector, alternating its indexes from {$0..n-1$};
+    \item {$s$}: Permutation's serial.
+\end{itemize}
+Routine:
+\newline
+  \indent For {$i \leftarrow 1$} to {$n$} do \newline
+  \indent\indent If {$ \lfloor (s - 1) ~/~ (i+1)! \rfloor ~mod~ 2 = 1$} \newline
+  \indent\indent\indent {$d_{i-1} \leftarrow i - \lfloor((s-1) ~mod~ (i+1)!) ~/~i!)\rfloor$} \newline
+  \indent\indent Else \newline
+   \indent \indent\indent {$d_{i-1} \leftarrow \lfloor((s-1) ~mod~ (i+1)!)
+   ~/~ i!)\rfloor$} \newline
+   \indent End For \newline \indent
+   return {$d$}.
+%================================Permutation Algorithm by Offset===========================
+\subsection*{Algorithm to attain the permutation vector from the offset vector}
+%==========================================================================================
+After the SOA is computed, the SPM is concluded with the
+\emph{Permutation Algorithm by Offset} (PAO). The PAO does the
+SPM's second step, returning the desired output. A relevant topic
+for the PAO construction is to find the decoding process of the
+permutation vector, with only the offset vector being the input.
+We know that the offset vector maps the elements of the
+permutation vector. In the decoding, we have:
+
+Let {$p$} be the permutation vector and {$d$} the offset vector:
+\begin{equation}
+    p = (p_1, p_2, ..., p_n)  \indent d = (d_1, d_2, ..., d_{n-1})
+\end{equation}
+
+And {$d$} already has its values determining by the SOA. This is
+how the decoding process is made: we know that {$d_1$} has its
+values discretely included between {$0$} and {$1$}. Obviously,
+{$0$} and {$1$} are the unique possible elements for {$d_1$}. From
+this information, we can conclude:
+
+\begin{displaymath}
+d_1 = \left\{ \begin{array}{ll}
+0, & \textrm{if $p_1 < p_2$}\\
+1, & \textrm{if $p_2 < p_1$}\\
+\end{array} \right.
+\end{displaymath}
+\newline
+
+We do not consider the possibility of equality between the
+elements of the permutation vector, because we know that there is
+no repeated elements on the vector, and if we organize it, the
+difference between them will be only one unit. Like {$d_1$}, the
+element {$d_2$} has its values included between {$0$} and {$2$}.
+In this and in other cases, we analyze the current inequality from
+the inequality that was created previously. For {$d_2$}, we have:
+
+\begin{displaymath}
+d_1 = \left\{ \begin{array}{ll}
+0, & d_2 = \left\{
+\begin{array}{ll}
+0, & \textrm{if $p_1 < p_2 < p_3$}\\
+1, & \textrm{if $p_1 < p_3 < p_2$}\\
+2, & \textrm{if $p_3 < p_1 < p_2$} \\
+\end{array} \right.
+\\\\
+1, & d_2 = \left\{
+\begin{array}{ll}
+0, & \textrm{if $p_2 < p_1 < p_3$}\\
+1, & \textrm{if $p_2 < p_3 < p_1$}\\
+2, & \textrm{if $p_3 < p_2 < p_1$} \\
+\end{array} \right.\\
+\end{array} \right.
+\end{displaymath}
+\newline
+
+We can conclude that as the value of {$d_2$} increases, {$p_3$}
+"slides" on the left through the inequality. In general, we have:
+\begin{equation}
+d_k \in \{0, 1, ..., k\} \indent \{p_i < p_j < ... < p_k < ... <
+p_t\} \indent i, j, t \neq k
+\end{equation}
+
+With {$p_k$} in the inequality with {$d_k$} positions, counted
+from right to left, because the order of the elements is
+ascendent. Finished the offset vector's raster, we will get a set
+of inequalities that informs the order of the permutation
+elements. We have, for example:
+
+Given a offset vector {$d = (0,2,2)$}, the inequality for a {$p$}
+permutation vector is:
+\begin{equation} \label{eq:des}
+p_3 < p_4 < p_1 < p_2
+\end{equation}
+
+Being the last inequality at \ref{eq:des} the final disposition
+between the elements of the vector. After the mapping of the
+permutation's elements was done, we can say that each element of
+the vector ordered in \ref{eq:des} corresponds to the elements of
+the identity permutation. This fact classifies the SPM in the
+first group described in the introduction of this article. On the
+\ref{eq:des} inequality, we have:
+\begin{equation}
+(p_3 = 1) < (p_4 = 2) < (p_1 = 3) < (p_2 = 4)
+\end{equation}
+
+The next step to get the final output is to arrange each one of
+the elements ordered on its own positions. As the {$p$} vector is
+ordered like {$(p_1, p_2, ..., p_n)$}, we have:
+\begin{equation}
+ p = (p_1, p_2, p_3, p_4)  \indent \Rightarrow \indent p = (3, 4, 1, 2)
+\end{equation}
+
+So we can get the SPM's final output. In implementation terms, to
+compute the input built from the permutation vector (from right to
+left) the corresponding indexes of the vector were used in
+relation to its complement. We will notice at the implementation
+that in the insertion moment of the current element, if it
+replaces another, the elements of inequality located on the left
+will "slide" to the left side, allocating space for the current
+element. The "slides to the left" operation is implemented on the
+subroutine \emph{push}.
+\newline \newline
+\textbf{Permutation Algorithm by Offset (PAO)}
+\newline
+Routine Specifications:
+\begin{itemize}
+    \item {$n$}: Size of the permutation vector;
+    \item {$i,j$}: Indexes of the algorithm's vectors;
+    \item {$p$}: Permutation vector, alternating its elements on {$0..n-1$};
+    \item {$r$}: Vector which will keep the element's position before being ordered.
+\end{itemize}
+Routine:
+\newline
+\indent {$r_{n-1} \leftarrow 1$}
+\newline
+ \indent For {$i \leftarrow 1$} to {$n-1$} do \newline
+  \indent \indent If {$r_{n-1-d_{i-1}} = 0$} \newline
+   \indent \indent \indent {$r_{n-1-d_{i-1}}$} {$\leftarrow i+1$} \newline
+  \indent \indent Else \newline
+   \indent \indent \indent {$r_{n-1-d_{i-1}}$} {$\leftarrow push$} \newline
+\indent End For \newline \indent For {$i \leftarrow 0$} to {$n-1$}
+do \newline
+   \indent \indent {$p_{r_i-1} \leftarrow i+1$} \newline
+\indent  End For \newline return {$p$}.
+\\\\
+\textbf{Subroutine Push} \\
+\indent For {$j \leftarrow (n-1) - i$}
+to {$j < (n - 1) - d_{i-1}$} do
+\newline
+\indent \indent {$p_j \leftarrow p_{j+1}$}
+\newline
+\indent End For
+\newline
+return {$i+1$}.
+%===================================Inverted Process=========================================
+\section*{SPM Inverted Process}
+%============================================================================================
+We can describe now the inverted process of the SPM's. We have the
+permutation vector as the input, and the desired output is the
+correspondent serial number. The ingenuous process to get the
+serial number for the permutation vector is the raster of the
+permutation list, comparing the vectors one by one, until gets the
+equivalent vector computed on the input, being the returned value
+the loop's index that does this raster. However, we can find the
+serial value inverting the SPM's steps:
+\begin{enumerate}
+    \item Given the permutation vector, find the offset vector;
+    \item Given the offset vector, find the serial number.
+\end{enumerate}
+
+Like the SPM, the second process depends on the first, with the
+first step data output corresponding to the second step data
+input.
+%===================================Offset Algorithm by Permutation==========================
+\subsection*{Algorithm to attain the offset vector from the permutation vector}
+%============================================================================================
+We will call this algorithm as the \emph{Offset Algorithm by
+Permutation} (OAP). It uses the definition of the offset vector
+(see equation \ref{eq}). Two nested loops add the value of each
+element of the offset vector.
+\newline \newline
+\textbf{Offset Algorithm by
+Permutation (OAP)}
+\newline
+Routine Specifications:
+\begin{itemize}
+    \item {$n$}: Size of the permutation vector;
+    \item {$i, j$}: Indexes of algorithms's vectors;
+    \item {$p$}: Permutation vector alternating its elements on {$0..n-1$};
+    \item {$d$}: Offset vector alternating its elements on {$0..n-2$}.
+\end{itemize}
+Routine:
+\newline
+\indent For {$i \leftarrow 0$} to {$n-2$} do \newline \indent
+\indent For {$j \leftarrow 0$} to {$i$} do \newline \indent
+\indent \indent If {$p_j > p_{i+1}$} \newline \indent \indent
+\indent \indent {$d_i \leftarrow d_i + 1$} \newline \indent
+\indent \indent End If \newline \indent \indent End For \newline
+\indent End For \newline return {$d$}.
+
+%=====================================Serial Algorithm by Offset=============================
+\subsection*{Algorithm to attain the serial number from the offset vector}
+%============================================================================================
+Like the OAP, the \emph{Serial Algorithm by Offset} (SAO) also
+uses definitions already showed at this article. We know that the
+value attributed for the elements of the offset vector, defined on
+\ref{eqt} and \ref{eqq} can be ordered depending on the serial.
+Given the variables:
+\begin{itemize}
+    \item {$d = (d_1,d_2,...,d_k,..., d_n)$}: Offset vector;
+    \item {$d_k$}: Offset vector's element;
+    \item {$s$}: Permutation's serial number;
+    \item {$k$}: Index of the offset vector;
+    \item {$q$}: Quotient of the division between {$s-1$} and {$(k+1)!$};
+    \item {$\lfloor x \rfloor$}: It returns the biggest integer value smaller than {$x$}.
+\end{itemize}
+For direct list, we have:
+\begin{equation} \label{eqdez}
+s-1 = d_k . k! + \lfloor q . (k+1)! \rfloor
+\end{equation}
+For inverted lists, we have:
+\begin{equation} \label{eqonze}
+s-1 = (k - d_k). k! + \lfloor q . (k+1)! \rfloor
+\end{equation}
+
+An important question for the algorithm implementation is how to
+find the variable's {$q$} value. To solve this question we have to
+consider that {$d_n$} belongs to a column that has only one list
+on a direct disposition (see Table \ref{table}, last vector {$d$}
+column). With this information, we conclude that the quotient for
+this column corresponds to a value between zero (closed) and one
+(open), making:
+\begin{equation}
+\lfloor q . (k+1)! \rfloor
+\end{equation}
+
+Corresponds to zero. With this,  \ref{eqdez} and \ref{eqonze} is
+equivalent to:
+\begin{equation}  \label{eqdoze}
+ s-1 = d_k . k!
+\end{equation}
+
+For direct lists, and
+\begin{equation}   \label{eqtreze}
+s-1 = (k - d_k). k!
+\end{equation}
+
+For inverted lists.
+
+The strategy of implementation to get the serial is done by
+incremental mode, working the current information being based on
+past information, doing a raster on the offset vector from right
+to left. This is particularly useful on this case, considering the
+next value that will converge to the final serial that belongs to
+a group related with the previous serial elements. Each quotient
+{$q$} during the raster will corresponds to zero, because we are
+considering the division in relation to the gotten serial. Another
+relevant question is how to classify if the previous element of
+the offset vector it is contained in a direct or inverted list.
+Looking at Table \ref{table}, we can make easily an equivalence
+grade, showed in Table \ref{tabletres}.
+\begin{table}[!hbp]
+  \centering
+  \caption{Next element status list of the offset vector}
+  \label{tabletres}
+\begin{tabular}{c|c l c}
+\hline
+\multicolumn{2}{c|}{Previous Value - Parity} && Next Value - Parity\\
+\hline
+Element & List && List\\
+\hline
+  Even & Direct & {$\Longrightarrow$} & Direct\\
+  Even & Inverted & {$\Longrightarrow$} & Inverted\\
+  Odd & Direct & {$\Longrightarrow$} & Inverted\\
+  Odd & Inverted & {$\Longrightarrow$} & Direct\\
+\hline
+\end{tabular}
+\end{table}
+
+Exemplifying the attainment serial process from the offset vector,
+we have:
+
+Let {$d = (1,0,3)$} be the offset vector and {$s$} the permutation
+serial. As the raster is done from right to left, we work first
+with the value {$3$}. As was already said, we have as an initial
+input a direct list which {$3$} is contained. For direct lists, we
+use an equation showed on \ref{eqdoze}:
+\begin{equation}
+s \leftarrow 3 . 3!  \Rightarrow 18
+\end{equation}
+
+After that, we observer the next element of the offset vector. As
+the previous element is in a direct list and it is odd, the
+element {$0$} will be in a inverted list. Using \ref{eqtreze}, we
+have:
+\begin{equation}
+s \leftarrow s + (2 - 0) . 2! \Rightarrow 18 + 4 \Rightarrow 22
+\end{equation}
+
+Finally, observing the last element of the offset vector, we have
+the previous element which is in a inverted list and it is even.
+Looking at Table \ref{tabletres}, we evidence that the element
+{$1$} is in a inverted list. Thus, we have:
+\begin{equation}
+s \leftarrow s + (1 - 1) . 1! \Rightarrow 22 + 0 \Rightarrow 22.
+\end{equation}
+
+After we have calculated the serial in a incremental mode, we add
+{$1$} to the serial, because the equations \ref{eqdoze} and
+\ref{eqtreze} depend on {$s-1$}. Thus, the serial value
+characterizes it between {$(1, n!)$}. Where {$n$} is the size of
+the permutation value given as an input:
+\begin{equation}
+s \leftarrow s + 1 \Rightarrow 22 + 1 \Rightarrow 23.
+\end{equation}
+
+The serial {$23$} is the corresponding serial to the offset vector
+{$(1,0,3)$} which corresponds to the permutation vector
+{$(3,2,4,1)$}. On the algorithm's implementation showed here, the
+increment of one unit to the serial was made in the beginning,
+before get into the loop. A boolean variable was specified to
+determine if the list which belongs the elements is direct or
+inverted. The conditions that determine if the list is direct or
+inverted is optimized from four to two conditions. The algorithm
+returns a non-negative integer value, corresponding to the serial
+number required.
+\newline \newline
+\textbf{Serial Algorithm by Offset (SAO)}
+\newline
+Routine Specifications:
+\begin{itemize}
+    \item {$s$}: Serial value;
+    \item {$n$}: Size of the offset vector;
+    \item {$i$}: Index of the offset vector;
+    \item {$d$}: Offset vector, alternating its elements on {$0..n-1$};
+    \item {$direct$}: Boolean variable. It determines if the list is direct or not.
+\end{itemize}
+Routine:
+\newline
+\indent {$s \leftarrow [~d_{n -1} . (n-1)!~] + 1$} \newline
+\indent {$direct \leftarrow true$} \newline \indent
+ For {$i \leftarrow n-1$} to {$1$} do \newline \indent \indent
+  If {$(d_i= even ~and~ direct = true)$} {$or$} {$(d_i = odd ~and~ direct = false)$} \newline
+  \indent \indent \indent
+   {$direct \leftarrow true$} \newline \indent
+   \indent\indent
+   {$s \leftarrow s +  d_{i-1} . (i-1)!$} \newline \indent
+   \indent
+  End If \newline \indent \indent
+  Else \newline \indent \indent
+  If {$(d_i = odd ~and~ direct = true)$} {$or$} {$(d_i = even ~and~ direct = false)$}
+  \newline \indent \indent \indent
+   {$direct \leftarrow false$} \newline \indent \indent \indent
+   {$s \leftarrow s +  (i - d_{i-1}) . (i-1)!$} \newline \indent \indent
+  End If \newline \indent
+ End For \newline
+return s.
+
+\section*{Demonstration}
+(This section is not ready)
+
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\end{thebibliography}
+\end{document}

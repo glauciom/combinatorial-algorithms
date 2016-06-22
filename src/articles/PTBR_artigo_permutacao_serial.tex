@@ -1,0 +1,698 @@
+\documentclass {amsart}
+\usepackage[portuges]{babel}
+\selectlanguage{portuges}
+\usepackage[latin1]{inputenc} %permite o uso de acentos
+\linespread{1.3}% use 1.3 para espaçamento 1 e meio e 1.6 para duplo
+\usepackage{color}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+\newcommand{\azero}{\textcolor{blue}{0}}
+\newcommand{\aum}{\textcolor{blue}{1}}
+\newcommand{\adois}{\textcolor{blue}{2}}
+\newcommand{\rzero}{\textcolor{red}{0}}
+\newcommand{\rum}{\textcolor{red}{1}}
+\newcommand{\rdois}{\textcolor{red}{2}}
+
+%corresponde ao azul
+%\newcommand{\azero}{\textbf{\Large0}}
+%\newcommand{\aum}{\textbf{\Large1}}
+%\newcommand{\adois}{\textbf{\Large2}}
+
+%corresponde ao vermelho
+%\newcommand{\rzero}{\textit{\Large0}}
+%\newcommand{\rum}{\textit{\Large1}}
+%\newcommand{\rdois}{\textit{\Large2}}
+
+%=================================FIM DO PREAMBULO=============================================
+\begin{document}
+
+\title[Método de Permutação Serial]
+ {Método de Permutação Serial}
+
+%==============================================================================================
+
+\author[Glaucio]{\glaucio}
+
+\address[Glaucio]{Departamento de Estatística e Informática - UNICAP}
+
+\email[Glaucio]{glaucio@dei.unicap.br}
+%=========================================================================
+
+\author[Emerson]{\emerson}
+
+\address[Emerson]{Departamento de Estatística e Informática - UNICAP}
+
+\email[Emerson]{eal@dei.unicap.br}
+
+%=========================================================================
+
+\keywords{Algoritmos Combinatoriais, Complexidade Computacional,
+Otimização Combinatorial, Permutação}
+
+%=========================================================================
+
+\begin{abstract}
+Este artigo apresenta o \emph{Método de Permutação Serial} (MPS).
+A proposta do MPS está em obter um vetor de permutação a partir do
+seu número de série. Também é apresentado o algoritmo que realiza
+o processo inverso ao MPS, obtendo o número de série a partir do
+vetor de permutação. O artigo conclui com uma análise comparativa
+dos algoritmos e indicadores de aplicações para o material
+estudado.
+\end{abstract}
+
+%=========================================================================
+\maketitle
+%=========================================================================
+\section*{Introdução}
+
+Os algoritmos de permutação são classificados em dois grupos: os
+que geram o conjunto de permutações a partir da permutação
+identidade e os que geram o conjunto de permutações por meio de
+trocas simples entre elementos do vetor, gerando a nova permutação
+a partir da permutação anterior. O algoritmo \emph{Next
+Permutation for N Letters}\cite{wi} está classificado no segundo
+grupo, gerando o conjunto completo de permutações através de
+chamadas sucessivas do algoritmo, obtendo a próxima permutação até
+atingir o último vetor da lista. O algoritmo \emph{Next
+Permutation} é poderoso no que diz respeito à geração do próximo
+vetor de permutação usando apenas informação local, garantindo que
+o próximo vetor será distinto de qualquer outro que foi gerado
+anteriormente. Existe um problema específico quanto à geração dos
+vetores de permutação:
+\begin{quote}
+\emph{É possível obter diretamente um vetor de permutação
+localizado em uma posição específica na lista de vetores,
+eliminando a alternativa de invocar o algoritmo \textbf{Next
+Permutation} até o vetor desejado?}
+\end{quote}
+O \emph{Método de Permutação Serial} (MPS) responde a essa
+pergunta, sendo capaz de processar a mesma lista de permutações
+que o algoritmo \emph{Next Permutation} processa, com a diferença
+de que o MPS necessita apenas do número de série e o tamanho do
+vetor de permutação para processar a saída desejada. A partir dos
+processos realizados no MPS, também é possível inverter o processo
+desse método, obtendo o número de série através do vetor de
+permutação.
+
+%================================================================
+\section*{Construção do MPS}
+%================================================================
+
+O MPS foi desenvolvido a partir de observações das saídas de dados
+do algoritmo \emph{Next Permutation}. Esse algoritmo possui uma
+variável auxiliar denominada vetor de deslocamento, o qual é
+definida a seguir.
+
+Seja o vetor de permutação {$p$} de tamanho {$n$} e o vetor de
+deslocamento {$d$} de tamanho {$n - 1$}, define-se o vetor {$d$}
+por:
+
+\begin{equation} \label{eq}
+    d_i = |~j: j \leq i, ~p_j > p_{i+1}~| ~~i = 1, 2, ... ,n
+\end{equation}
+
+Que equivale à afirmação:
+\begin{quote}
+\emph{Existem quantos números maiores que {$p_{i+1}$} entre o
+início do vetor de permutação e o índice {$i$} do vetor {$d$}?}
+\end{quote}
+
+Sendo {$n!$} a lista completa dos vetores gerados, temos na Tabela
+\ref{tab_1} um exemplo de saída do vetor de permutação {$p$} em
+relação ao seu serial, para {$n = 5$} e o {$serial = 32$}.
+
+\begin{table}[!hbp]
+  \centering
+  \caption{Processamento de entrada e saída típico do \emph{Next Permutation}.}
+  \label{tab_1}
+\begin{tabular}{c|c}
+ \hline
+  Entrada & Saída \\
+  \hline
+  {$n = 5$} & {$p = (3, 5, 1, 2, 4)$} \\
+  {$Serial = 32$} & {$d = (0, 2, 2, 1)$} \\
+  \hline
+ \end{tabular}
+\end{table}
+
+O MPS subdivide-se em duas etapas, onde a entrada de dados da
+segunda etapa corresponde à saída de dados da primeira:
+\begin{enumerate}
+\item  Dado o número serial e o tamanho do vetor de permutação,
+determinar o vetor de deslocamento.
+\item Dado o vetor de
+deslocamento, determinar o vetor de permutação.
+\end{enumerate}
+
+
+%================================================================
+\subsection*{Algoritmo de obtenção do vetor de deslocamento}
+%================================================================
+
+Para resolver a primeira etapa do MPS é necessário um algoritmo
+para obter o vetor de deslocamento, denominado Algoritmo de
+Deslocamento Serial (ADS). O algoritmo realiza um cálculo que
+reflete o padrão de geração dos vetores de deslocamento por toda a
+lista de permutações, usando apenas informação local. Na Tabela
+\ref{table}, pode-se visualizar o padrão do vetor de deslocamento
+ao longo da lista de permutações, onde a coluna destacada servirá
+como guia para a determinação do padrão que o ADS decodifica.
+
+\begin{table}[!hbp]
+  \centering
+  \caption{Lista completa de permutações, para n = 4}
+  \label{table}
+\begin{tabular}{c|c|c}
+ \hline
+   Serial  &p  &d\\
+ \hline
+    1   &(1,2,3,4)  &(0,\azero,0)\\
+  \hline
+    2   &(2,1,3,4)  &(1,\azero,0)\\
+  \hline
+    3   &(3,1,2,4)  &(1,\aum,0)\\
+  \hline
+    4   &(1,3,2,4)  &(0,\aum,0)\\
+  \hline
+    5   &(2,3,1,4)  &(0,\adois,0)\\
+  \hline
+    6   &(3,2,1,4)  &(1,\adois,0)\\
+  \hline
+    7   &(4,2,1,3)  &(1,\rdois,1)\\
+  \hline
+    8   &(2,4,1,3)  &(0,\rdois,1)\\
+  \hline
+    9   &(1,4,2,3)  &(0,\rum,1)\\
+  \hline
+    10  &(4,1,2,3)  &(1,\rum,1)\\
+  \hline
+    11  &(2,1,4,3)  &(1,\rzero,1)\\
+  \hline
+    12  &(1,2,4,3)  &(0,\rzero,1)\\
+  \hline
+    13  &(1,3,4,2)  &(0,\azero,2)\\
+  \hline
+    14  &(3,1,4,2)  &(1,\azero,2)\\
+  \hline
+    15  &(4,1,3,2)  &(1,\aum,2)\\
+  \hline
+    16  &(1,4,3,2)  &(0,\aum,2)\\
+  \hline
+    17  &(3,4,1,2)  &(0,\adois,2)\\
+  \hline
+    18  &(4,3,1,2)  &(1,\adois,2)\\
+  \hline
+    19  &(4,3,2,1)  &(1,\rdois,3)\\
+  \hline
+    20  &(3,4,2,1)  &(0,\rdois,3)\\
+  \hline
+    21  &(2,4,3,1)  &(0,\rum,3)\\
+  \hline
+    22  &(4,2,3,1)  &(1,\rum,3)\\
+  \hline
+    23  &(3,2,4,1)  &(1,\rzero,3)\\
+  \hline
+    24  &(2,3,4,1)  &(0,\rzero,3)\\
+  \hline
+ \end{tabular}
+\end{table}
+
+Seja {$d$} o vetor de deslocamento e {$n$} o tamanho do vetor de
+deslocamento. Cada coluna do vetor {$d$} mostrado na Tabela
+\ref{table} possui as seguintes características:
+\begin{itemize}
+
+\item Sendo {$k$} o valor da coluna corrente ({$k = 1, 2, ...,
+n$}), os elementos da coluna {$d_k$} ({$0 \leq d_k \leq k$})
+repetem-se {$k!$} vezes até que o elemento da coluna atinja o
+valor de {$k$}. Isso pode ser visualizado na primeira parte da
+coluna destacada na Tabela \ref{table}, ilustrado em azul, onde a
+quantidade de elementos destacados em azul ou vermelho é
+determinado por {$(k + 1)!$}
+
+\item Quando {$d_k$} = k em {$k!$} vezes, os elementos
+subseqüentes da lista são dispostos de forma reversa, como
+ilustrado em vermelho na Tabela \ref{table}. As listas de forma
+normal e invertida intercalam-se até completar todas as posições
+da coluna.
+\end{itemize}
+
+Como existe ao longo de cada coluna do vetor de deslocamento uma
+intercalação entre os dois tipos de listas (uma direta e uma
+inversa), pode-se considerar esse fato como um elemento de
+paridade na lista, considerando como par a lista no seu formato
+direto e como ímpar a lista em seu formato reverso. Para
+determinar a relação entre o número de série e a paridade da
+lista, temos:
+
+\begin{equation}
+f = \lfloor(s - 1) ~/~ (k+1)!\rfloor  ~mod~ 2
+\end{equation}
+
+Em que:
+\begin{itemize}
+    \item {$f$}: Determina se a lista é direta {$(f = 0)$} ou
+reversa {$(f = 1)$};
+    \item {$s$}: Número de série;
+    \item {$k$}: Índice do vetor de deslocamento;
+    \item {$\lfloor x \rfloor$}: Função Piso. Retorna o
+maior valor inteiro menor que {$x$};
+    \item {$mod$}: Operação que retorna o resto de uma
+divisão.
+\end{itemize}
+No caso da lista ser considerada direta, atribui-se ao vetor de
+deslocamento:
+
+\begin{equation}    \label{eqt}
+d_k = \lfloor((s-1) ~mod~ (k+1)!) ~/~ k!)\rfloor
+\end{equation}
+
+Se a lista for considerada reversa, atribui-se o complemento do
+que seria a lista direta:
+
+\begin{equation}    \label{eqq}
+d_k = k - \lfloor((s-1) ~mod~ (k+1)!) ~/~ k!)\rfloor
+\end{equation}
+
+Cada atribuição é feita ao longo de um laço que percorre todo o
+vetor de deslocamento.
+
+Algoritmo de Deslocamento Serial (ADS).
+\newline
+Especificações:
+\begin{itemize}
+    \item {$n$}: tamanho do vetor de deslocamento;
+    \item {$i$}: índice referente ao elemento do vetor de deslocamento;
+    \item {$d$}: vetor de deslocamento, variando seus índices em {$0..n-1$};
+    \item {$s$}: Serial da permutação.
+\end{itemize}
+
+Rotina:
+\newline
+\indent Para {$i \leftarrow 1$} até {$n$} faça \newline
+  \indent\indent Se {$ \lfloor (s - 1) ~/~ (i+1)! \rfloor ~mod~ 2 = 1$} \newline
+   \indent\indent\indent {$d_{i-1} \leftarrow i - \lfloor((s-1) ~mod~ (i+1)!)
+   ~/~i!)\rfloor$} \newline
+  \indent\indent Senão \newline
+   \indent \indent\indent {$d_{i-1} \leftarrow \lfloor((s-1) ~mod~ (i+1)!)
+   ~/~ i!)\rfloor$}
+   \newline \indent Fim Para \newline \indent
+   retorne {$d$}.
+
+%===================================================================
+\subsection*{Algoritmo de obtenção do vetor de permutação a partir do
+vetor de deslocamento}
+%==================================================================
+Depois que o ADS é processado, o MPS é
+finalizado com o Algoritmo de Permutação por Deslocamento (APD). O
+APD realiza a segunda etapa do MPS, retornando a saída desejada.
+Um tópico relevante para a construção do APD é a determinação do
+processo de decodificação do vetor de permutação, tendo como
+entrada apenas a informação do vetor de deslocamento. Sabe-se que
+o vetor de deslocamento faz um mapeamento dos elementos do vetor
+de permutação. No caso da decodificação, temos:
+
+Seja {$p$} o vetor de permutação e {$d$} o vetor de deslocamento:
+
+\begin{equation}
+    p = (p_1, p_2, ..., p_n)  \indent d = (d_1, d_2, ..., d_{n-1})
+\end{equation}
+
+Onde {$d$} já se encontra com seus valores determinados pelo ADS.
+O processo de decodificação é realizado da seguinte forma: Sabe-se
+que {$d_1$} tem seus valores discretamente compreendidos entre
+{$0$} e {$1$}. Obviamente, {$0$} e {$1$} são os únicos elementos
+possíveis para {$d_1$}. A partir dessa informação, pode-se
+concluir que:
+
+\begin{displaymath}
+d_1 = \left\{ \begin{array}{ll}
+0, & \textrm{se $p_1 < p_2$}\\
+1, & \textrm{se $p_2 < p_1$}\\
+\end{array} \right.
+\end{displaymath}
+\newline
+Não se leva em consideração a possibilidade de igualdade entre os
+elementos do vetor de permutação, pois é sabido que não há
+elementos repetidos no vetor, e se dispostos em ordem a diferença
+entre eles é de apenas uma unidade. Analogamente a {$d_1$}, o
+elemento {$d_2$} tem seus valores compreendidos entre {$0$} e
+{$2$}. Nesse e nos outros casos, analisa-se a desigualdade atual a
+partir das desigualdades geradas anteriormente. No caso de
+{$d_2$}, temos:
+
+\begin{displaymath}
+d_1 = \left\{ \begin{array}{ll}
+0, & d_2 = \left\{
+\begin{array}{ll}
+0, & \textrm{se $p_1 < p_2 < p_3$}\\
+1, & \textrm{se $p_1 < p_3 < p_2$}\\
+2, & \textrm{se $p_3 < p_1 < p_2$} \\
+\end{array} \right.
+\\\\
+1, & d_2 = \left\{
+\begin{array}{ll}
+0, & \textrm{se $p_2 < p_1 < p_3$}\\
+1, & \textrm{se $p_2 < p_3 < p_1$}\\
+2, & \textrm{se $p_3 < p_2 < p_1$} \\
+\end{array} \right.\\
+\end{array} \right.
+\end{displaymath}
+\newline
+Observa-se que {$p_3$} 'desliza' à esquerda por toda a
+desigualdade à medida que o valor de {$d_2$} aumenta. Em geral,
+temos:
+
+\begin{equation}
+d_k \in \{0, 1, ..., k\} \indent \{p_i < p_j < ... < p_k < ... <
+p_t\} \indent i, j, t \neq k
+\end{equation}
+
+Com {$p_k$} situado na desigualdade em {$d_k$} posições,
+contabilizadas da direita para a esquerda, pois a ordem dos
+elementos é crescente. Ao final da varredura do vetor de
+deslocamento, será obtido um conjunto de desigualdades que informa
+a ordem dos elementos de permutação. Como exemplo, temos:
+
+Seja {$d = (0,2,2)$}, a desigualdade para uma vetor de permutação
+{$p$} será destrinchado em:
+
+\begin{equation} \label{eq:des}
+p_3 < p_4 < p_1 < p_2
+\end{equation}
+
+Sendo a última desigualdade em \ref{eq:des} a disposição final
+entre os elementos do vetor. Após o mapeamento dos elementos da
+permutação, é certo afirmar que cada elemento do vetor dispostos
+em \ref{eq:des} corresponde aos elementos da permutação
+identidade. Isso classifica o MPS no primeiro grupo descrito na
+introdução deste artigo. No caso das desigualdades descritas em
+\ref{eq:des}, temos:
+
+\begin{equation}
+(p_3 = 1) < (p_4 = 2) < (p_1 = 3) < (p_2 = 4)
+\end{equation}
+
+O próximo passo para obter a saída final é colocar cada um dos
+elementos dispostos em ordem nas suas respectivas posições. Como o
+vetor {$p$} está disposto em {$(p_1, p_2, ..., p_n)$}, temos:
+
+\begin{equation}
+ p = (p_1, p_2, p_3, p_4)  \indent \Rightarrow \indent p = (3, 4, 1, 2)
+\end{equation}
+
+Obtendo dessa forma a saída final do MPS. Em termos de
+implementação, para computar a entrada construída do vetor de
+permutação (da direita para esquerda), os índices correspondentes
+ao vetor foram usados com relação ao seu complemento. Poderá ser
+observado na implementação que no caso do elemento corrente ser
+inserido entre elementos da desigualdade acarreta numa operação de
+deslocamento à esquerda entre os elementos que se situam à
+esquerda da posição do elemento que será inserido. A operação de
+'deslizar à esquerda' é descrito na sub-rotina \emph{push}.
+
+Algoritmo de permutação por deslocamento (APD)
+\newline
+Especificações:
+\begin{itemize}
+    \item {$n$}: tamanho do vetor de permutação;
+    \item {$i, j$}: índices dos vetores do algoritmo;
+    \item {$p$}: Vetor de permutação, variando seus elementos em {$0..n-1$}.
+    \item {$r$}: Vetor auxiliar, que guardará as posições dos elementos antes de serem ordenados.
+\end{itemize}
+Rotina:
+\newline
+Entrada Inicial:
+\newline
+\indent {$p_{n-1} \leftarrow 1$}
+\newline
+Entradas posteriores:
+\newline
+ \indent Para {$i \leftarrow 1$} até {$n-1$} faça \newline
+  \indent \indent Se {$r_{n-1-d_{i-1}} = 0$} \newline
+   \indent \indent \indent {$r_{n-1-d_{i-1}}$} {$\leftarrow i+1$} \newline
+  \indent \indent Senão \newline
+   \indent \indent \indent {$r_{n-1-d_{i-1}}$} {$\leftarrow push$} \newline
+\indent Fim Para \newline
+\newline
+// Ordenando a estrutura Elemento a partir do vetor {$r$} \newline
+\indent  Para {$i \leftarrow 0$} até {$n-1$} faça \newline
+   \indent \indent {$p_{r_i-1} \leftarrow i$} \newline
+\indent  Fim Para \newline
+\newline
+Sub-rotina push
+
+\indent Para {$j \leftarrow (n-1) - i$} até {$j < (n - 1) -
+d_{i-1}$} faça
+\newline
+\indent \indent {$p_j \leftarrow p_{j+1}$}
+\newline
+\indent Fim Para
+\newline
+retorne {$i+1$}.
+%===============================================================
+\section*{Processo Inverso ao MPS}
+%===============================================================
+
+Diante do material apresentado, pode-se descrever o processo
+inverso de funcionamento do MPS (MPS{$^{-1}$). Agora o que se tem
+como entrada é o vetor de permutação, e a saída desejada é o seu
+número de série correspondente. O processo ingênuo de se obter o
+número serial para o vetor de permutação é a varredura da
+lista de permutações, comparando os vetores um a um, até atingir o
+vetor equivalente ao computado na entrada, tendo como valor de
+retorno o índice do laço que realiza essa varredura. Porém,
+pode-se encontrar o valor do serial invertendo as etapas do MPS:
+\begin{enumerate}
+    \item Dado o vetor de permutação, determinar o vetor de
+deslocamento;
+    \item Dado o vetor de deslocamento, determinar o
+número serial.
+\end{enumerate}
+
+Analogamente ao MPS, o primeiro processo é dependente do primeiro,
+com a saída de dados da primeira etapa correspondente à entrada de
+dados da segunda etapa.
+
+\subsection*{Algoritmo para obtenção do vetor de deslocamento a
+partir do vetor de permutação} Para esse algoritmo, que será
+denominado aqui por Algoritmo de Deslocamento por Permutação
+(ADP), usa-se a definição do vetor de deslocamento (equação
+ \ref{eq}). Dois laços aninhados incrementam o valor de
+cada elemento do vetor de deslocamento.
+
+Algoritmo de Deslocamento por Permutação
+\newline
+Especificações:
+\begin{itemize}
+    \item {$n$}: tamanho do vetor de permutação;
+    \item {$i, j$}: índices dos vetores dos algoritmos;
+    \item {$p$}: Vetor de permutação, variando seus elementos em
+{$0..n-1$};
+    \item {$d$}: Vetor de deslocamento, variando seus elementos em
+{$0..n-2$}.
+\end{itemize}
+Rotina:
+\newline
+\indent Para {$i \leftarrow 0$} até {$n-2$} faça \newline \indent
+\indent Para {$j \leftarrow 0$} até {$i$} faça \newline \indent
+\indent \indent Se {$p_j > p_{i+1}$} \newline \indent \indent
+\indent \indent {$d_i \leftarrow d_i + 1$} \newline \indent
+\indent \indent Fim se \newline \indent \indent Fim para \newline
+\indent Fim para \newline retorne {$d$}.
+
+%==================AINDA NAO REVISADO==========================================
+\subsection*{Algoritmo para obtenção do número de série a partir do
+vetor de deslocamento}
+
+Analogamente ao ADP, o Algoritmo Serial por Deslocamento (ASD)
+também usa definições já apresentadas neste artigo. É sabido que
+os valores atribuídos aos elementos do vetor de deslocamento,
+definidos em \ref{eqt} e \ref{eqq} podem ser dispostos em função
+do serial.
+
+Seja:
+\begin{itemize}
+    \item {$d = (d_1,d_2,...,d_k,..., d_n)$}: Vetor de deslocamento;
+    \item {$d_k$}: elemento do vetor de deslocamento
+    \item {$s$}: Número serial da permutação;
+    \item {$k$}: índice do vetor de deslocamento;
+    \item {$q$}: Quociente da divisão entre {$s-1$} e {$(k+1)!$}
+    \item {$\lfloor x \rfloor$}: Retorna o maior valor inteiro menor que {$x$};
+\end{itemize}
+
+Para listas diretas, temos:
+
+\begin{equation} \label{eqdez}
+s-1 = d_k . k! + \lfloor q . (k+1)! \rfloor
+\end{equation}
+
+Para listas reversas, temos:
+
+\begin{equation} \label{eqonze}
+s-1 = (k - d_k). k! + \lfloor q . (k+1)! \rfloor
+\end{equation}
+
+Uma questão importante para a implementação do algoritmo é como
+determinar o valor da variável {$q$}. Para resolver essa questão,
+deve-se levar em conta que {$d_n$} pertence a uma coluna que
+possui apenas uma lista em ordem normal, (vide Tabela \ref{table},
+última coluna do vetor {$d$}). Com essa informação, conclui-se que
+o quociente para essa coluna corresponde a um valor menor que
+zero, fazendo com que o fragmento:
+
+\begin{equation}
+\lfloor q . (k+1)! \rfloor
+\end{equation}
+
+Corresponda a zero. Com isso,  \ref{eqdez} e \ref{eqonze} equivale a
+
+\begin{equation}  \label{eqdoze}
+ s-1 = d_k . k!
+\end{equation}
+
+Para listas diretas, e
+
+\begin{equation}   \label{eqtreze}
+s-1 = (k - d_k). k!
+\end{equation}
+
+Para listas reversas.
+
+A estratégia de implementação para a obtenção do serial é
+realizada de modo incremental, trabalhando a informação atual
+baseando-se em informação passada, efetuando uma varredura no
+vetor de deslocamento da direita para a esquerda. Isso é
+particularmente útil nesse caso, para considerar que o próximo
+valor que convergirá para o serial final pertence a um grupo
+relacionado com o serial dos elementos anteriores. Isso fará com
+que o valor de cada quociente {$q$} durante a varredura
+corresponda a zero, pois está se levando em consideração a divisão
+em relação ao serial obtido. Outro questionamento relevante é como
+classificar se o elemento anterior do vetor de deslocamento está
+contido em uma lista normal ou reversa. Observando a tabela
+\ref{table}, pode-se facilmente montar um quadro de equivalências, exibidas na
+Tabela \ref{tabletres}.
+
+\begin{table}[!hbp]
+  \centering
+  \caption{Status da Lista do próximo elemento do vetor de deslocamento}
+  \label{tabletres}
+\begin{tabular}{c|c l c}
+\hline
+\multicolumn{2}{c|}{Valor Anterior - Paridade} && Próximo Valor - Paridade\\
+\hline
+Elemento & Lista && Lista\\
+\hline
+  Par & Normal & {$\Longrightarrow$} & Normal\\
+  Par & Invertida & {$\Longrightarrow$} & Invertida\\
+  Ímpar & Normal & {$\Longrightarrow$} & Invertida\\
+  Ímpar & Invertida & {$\Longrightarrow$} & Normal\\
+\hline
+\end{tabular}
+\end{table}
+
+Exemplificando o processo de obtenção do serial a partir do vetor
+de deslocamento, temos:
+
+Seja o vetor de deslocamento {$d = (1,0,3)$} e {$s$} o serial da
+permutação. Como a varredura é realizada da direita para a
+esquerda, trabalha-se primeiramente com o valor {$3$}. Como já
+dito, temos como entrada inicial que a lista a qual {$3$} está
+contido é uma lista normal. Para listas normais, usa-se a equação
+especificada em \ref{eqdoze}:
+
+\begin{equation}
+s \leftarrow 3 . 3!  \Rightarrow 18
+\end{equation}
+
+Em seguida, observa-se o próximo elemento do vetor de permutação.
+Como o elemento anterior está contido em uma lista normal e é
+ímpar, o elemento {$0$} estará contido em uma lista invertida.
+Usando \ref{eqtreze}, temos:
+
+\begin{equation}
+s \leftarrow s + (2 - 0) . 2! \Rightarrow 18 + 4 \Rightarrow 22
+\end{equation}
+
+Por fim, observando o último elemento do vetor de deslocamento,
+temos que o elemento anterior está contido em uma lista invertida
+e é par. Olhando para a tabela \ref{tabletres}, constata-se que o
+elemento {$1$} está contido em uma lista invertida. Assim sendo,
+temos:
+\begin{equation}
+s \leftarrow s + (1 - 1) . 1! \Rightarrow 22 + 0 \Rightarrow 22.
+\end{equation}
+
+Após ter calculado o serial de modo incremental, acrescenta-se {$1$}
+ao serial, uma vez que as equações descritas em \ref{eqdoze} e
+\ref{eqtreze} estão em função de {$s-1$}. Com isso, o valor do
+serial caracteriza-o na faixa de intervalo {$[1..n!]$}, onde {$n$}
+é o tamanho do vetor de permutação dado como entrada:
+
+\begin{equation}
+s \leftarrow s + 1 \Rightarrow 22 + 1 \Rightarrow 23.
+\end{equation}
+
+Sendo 23 o serial correspondente ao vetor de deslocamento
+{$(1,0,3)$}, que por sua vez corresponde ao vetor de permutação
+{$(3,2,4,1)$}.
+
+Na implementação do algoritmo aqui descrito, o incremento de uma
+unidade ao serial foi feito no início, antes de entrar no laço.
+Uma variável lógica foi especificada para determinar se uma lista
+a qual pertence o elemento é normal ou invertida. As condições que
+determinam se a lista é normal ou invertida está otimizado de
+quatro para duas condições. O Algoritmo retorna um valor inteiro,
+correspondendo ao número serial procurado.
+
+Algoritmo Serial por Deslocamento
+\newline
+Especificações:
+\begin{itemize}
+    \item {$s$}: Valor do serial.
+    \item {$n$}: tamanho do vetor de deslocamento;
+    \item {$i$}: índice do vetor de deslocamento;
+    \item {$d$}: Vetor de deslocamento, variando seus elementos em {$0..n-1$}.
+    \item {$normal$}: Variável lógica. Determina se a lista é normal ou não.
+\end{itemize}
+Rotina:
+\newline
+\indent {$s \leftarrow (d_{n -1} . (n-1)!) + 1$} \newline \indent
+{$normal \leftarrow true$} \newline \indent
+ Para {$i \leftarrow n-1$} até {$1$} faça \newline \indent \indent
+  Se {$(d_i= par ~e~ normal = true)$} {$ou$} {$(d_i = impar ~e~ normal = false)$} \newline
+  \indent \indent \indent
+   {$normal \leftarrow true$} \newline \indent
+   \indent\indent
+   {$s \leftarrow s +  d_{i-1} . (i-1)!$} \newline \indent
+   \indent
+  Fim Se \newline \indent \indent
+  Senão \newline \indent \indent
+  Se {$(d_i = impar ~e~ normal = true)$} ou {$(d_i = par ~e~ normal = false)$}
+  \newline \indent \indent \indent
+   {$normal \leftarrow false$} \newline \indent \indent \indent
+   {$s \leftarrow s +  (i - d_{i-1}) . (i-1)!$} \newline \indent \indent
+  Fim Se \newline \indent
+ Fim Para \newline
+retorne s.
+
+%================================================================
+
+
+%==============================================================
+\section*{Análise dos algoritmos / aplicações}
+A escrever...
+%==============================================================
+
+
+%===========================BIBLIOGRAFIA==============================================
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\end{thebibliography}
+
+\end{document}

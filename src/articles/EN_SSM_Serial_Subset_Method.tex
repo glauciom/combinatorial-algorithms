@@ -1,0 +1,127 @@
+%===============================Serial Subset Method=====================================
+\documentclass {amsart}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+%=================================Preamble ends here========================================
+
+
+\begin{document}
+\title[Serial Subset Method]
+ {Serial Subset Method}
+%=====================================Title=================================================
+
+
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+
+
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+
+\keywords{Combinatorial Algorithms, Complexity, Combinatorial
+Optimization, Subsets}
+%===================================Key Words===============================================
+
+
+\begin{abstract}
+This article presents the \emph{Serial Subset Method} (SSM). The
+SSM proposal is to obtain a subset vector from its serial number.
+The algorithm that does the SSM's inverted process is also showed,
+getting the serial number from the subset vector. The article ends
+with the demonstration of the method exposed here.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+We have {$2^n$} possible configurations to get the subsets of a {$\{1,2,\ldots,n\}$} set. The disposition of the subset's elements can be represented by a flag which activates its insertion into the subset. For example, the configuration {$\{1,0,1,1,0\}$} represents the subset {$\{1,3,4\}$}. The \emph{Next Subset of an {$n$}-Set}\cite{wi} algorithm does this job in a sequential form, returning the next subset from the actual one.
+
+This article proposes to present a method that returns a subset of an {$n$}-Set from its serial number. The inverted process for this method is also showed, getting the serial number from the subset given as input.
+
+\section*{SSM Construction}
+The SSM was built from the repetition's pattern analysis that the subsets presents in the complete list of subsets. Similarly to the \emph{Serial Permutation Method}\cite{me} related to repetition's pattern of the offset vector, the SSM has a regular repetition pattern, being able to get each subset's component through a closed equation.
+
+Let {$p$} be a subset of a {$n$}-Set, each subset's component with index {$k = 0,1,\ldots,n-1$} related to a serial number {$s = 1,2,\ldots,2^n$} is defined by
+
+\begin{equation}    \label{eqt}
+p_k = \displaystyle\biggl\lfloor\frac{(s-1 + 2^k) ~mod~
+2^{k+2}}{2^{k+1}}\displaystyle\biggl\rfloor
+\end{equation}
+
+The equation \ref{eqt} deserves some considerations, since the same one doesn't present restrictions in the pattern's representation. Each component {$p_k \in \{0,1\}$}, and {$2^n$} in {$(s-1 + 2^k)$} is related to with a cyclic structure which the numbers present at the whole list. This peculiarity is easily identified on output data of \emph{Next Subset of an {$n$}-Set}\cite{wi} algorithm and the method here proposed.
+
+\subsection*{SSM Specifications}
+About the SSM's specifications, we have a loop that only do an association between the equation showed in \ref{eqt} and the structure that represents the subset in the method. The method returns a subset from the serial number given as input, where the number {$1$} in the output data indicates whose subset's component will be activated, as explained in the introduction of this article.\\\\
+\textbf{Serial Subset Method}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$p$}: Subset of {$n$}-Set;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\end{itemize}
+Routine:\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$p_i \leftarrow \lfloor ((s-1 + 2^i) ~mod~
+2^{i+2})~/~2^{i+1}\rfloor$}\\
+\indent End For\\
+return {$p$}.\\
+End Routine.
+
+
+\section*{SSM Inverted Method}
+In this section the inverse process of the SSM will be shown. The input data is the subset (the elements of the set that will be activated) and the output data is the corresponding position in the list of subsets. In the case in hands, we determine which it is the moment to walk through on specific positions of the identified repetition's pattern in subsets. The inverted process for subsets is also have similarities with the \emph{Serial Permutation Method}\cite{me} inverted process. The list of subsets, from right to left, presents a sequence of {$0$}'s and {$1$}'s, in this order. From there, the list for analysis of the subset's next component can be inverted in the case of this subset's element be equals to {$1$}. In this case, we cannot advance in the list for convergence of the serial's desired value. Otherwise, the serial value is modified on iterative form among the specific position of the list until reach the subset's serial.  
+
+\subsection*{SSM Specifications}
+In the SSM's specification, it was defined a logical variable which defines if the list of the current subset's component has been verified is direct or inverted, defining as {$true$} for direct lists and {$false$} for inverted lists, starting this variable as {$true$} because the components' disposition has been analysed from right to left. The initial serial's value is initialized with {$1$}. After that, we have a decreased loop that does the verifications in each component of subset for determine if it advances or not for the convergence of the final result. It was observed that such condition in the way as was constructed can be represented by \emph{eXclusive OR} logical connective, usually denoted by {$xor$} operator. When the {$xor$} is satisfied, the logical variable is activated as {$true$}, indicating that the next component is included on a direct list. Otherwise, the serial advances other specific position and the list is configured as inverted one.\\\\
+\textbf{Serial Subset Method (Inverted Process)}
+
+Algorithm Specifications:
+\begin{itemize}
+
+\item {$p$}: Subset of {$n$}-Set;
+
+\item {$n$}: Cardinality of the Set;
+
+\item {$s$}: Serial of {$p$} subset;
+
+\item {$d$}: Logical variable, which indicates if the list of
+subsets is on direct or inverted order.
+
+\end{itemize}
+Routine:\\
+\indent {$s \leftarrow 1$}\\
+\indent {$d \leftarrow true$}\\
+\indent For {$i \leftarrow n-1$} down to {$0$} do\\
+\indent \indent If {$(p_i = 1 ~xor~ d) = true$}\\
+\indent \indent \indent {$d \leftarrow true$}\\
+\indent \indent Else\\
+\indent \indent \indent {$d \leftarrow false$}\\
+\indent \indent \indent {$s \leftarrow s +  2^i$}\\
+\indent \indent End If-Else\\
+\indent End For\\
+return {$s$}.\\
+End Routine.
+
+\section*{Demonstration}
+(This section is not ready)
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M.,
+OLIVEIRA-LIMA, Emerson A. de O. Serial Permutation Method, (Not
+published yet),2004.
+\end{thebibliography}
+\end{document}

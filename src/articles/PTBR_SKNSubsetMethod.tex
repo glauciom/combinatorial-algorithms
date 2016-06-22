@@ -1,0 +1,172 @@
+%===============================Serial KNSubset Method=====================================
+\documentclass {amsart}
+\usepackage[latin1]{inputenc}
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+%=================================Preamble ends here========================================
+
+
+\begin{document}
+\title[Serial {$k$}-Subset of an {$n$}-Set Method]
+ {Serial {$k$}-Subset of an {$n$}-Set Method}
+%=====================================Title=================================================
+
+
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estatística e Informática - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+
+
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estatística e Informática - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+
+\keywords{Combinatorial Algorithms, Complexity, Combinatorial Optimization, Subsets}
+%===================================Key Words===============================================
+
+
+\begin{abstract}
+This article presents the \emph{Serial {$k$}-Subset of an {$n$}-Set Method} (SKSM). 
+The SKSM proposal is to obtain a {$k$}-subset vector of an {$n$}-set vector from its serial number. The algorithm that does the SKSM's inverted process is also showed, getting the serial number from the {$k$}-subset vector. The article ends with the demonstration of the method exposed here.
+\end{abstract}
+%=================================End Abstract=============================================
+ \maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+Denotamos por {$\big({n\atop k}\big)$} o número de possibilidades de combinarmos {$n$} coisas em {$k$} partes distintas. Na literatura analisada \cite{wi}, temos duas maneiras de realizar esse trabalho de forma sequencial. O primeiro método constrói os {$k$}-subsets em ordem lexicográfica e o segundo método obtém o próximo subconjunto a partir do seu predecessor, subtraindo um elemento do conjunto e adicionando em outro elemento do subcojunto.
+
+O objetivo deste artigo é apresentar um método que acionado iterativamente gera uma lista em ordem lexicográfica, tomando como entrada a sua posição na lista de combinações possíveis. Esta estratégia mostra-se mais eficiente quando se deseja obter uma combinação em uma posição específica dentro da lista completa de combinações.
+
+\section*{Obtendo combinações em ordem lexicográfica}
+
+O algoritmo \emph{Next {$k$}-subset of an {$n$}-Set}\cite{wi} é capaz de gerar de modo bem simples as combinações em ordem lexicográfica de modo não-recursivo. Nesta seção será mostrado, a título de opcionalidade, o modelo recursivo deste algoritmo. A combinação atual do modelo recursivo é exibida através do método {$showOutPut$}, que está denotando aqui um modelo de saída de dados genérico, para uma combinação que terá como saída elementos que podem variar entre {$0$} e {$n-1$}. A chamada para inicialização da rotina deverá ser feita na forma {$Combine(0)$}, tomando como critério-base da recursão o momento em que o parametro realizou {$k$} recursões. A seguir temos o modelo recursivo do algoritmo, sem se deter a maiores detalhes da sua construção.\\\\
+\textbf{Recursive {$k$}-subset of an {$n$}-Set Algorithm}
+
+Especificações do Algoritmo:
+\begin{itemize}
+\item {$s$}: Vetor {$k$}-dimensional;
+\item {$n$}: Cardinalidade do conjunto;
+\item {$y$}: Vetor auxiliar, que determina as mudanças dos elementos do conjunto {$n$} no subconjunto {$k$}.
+\end{itemize}
+Routine:\\
+\indent {$Combine(i)$} \\
+\indent \indent For {$s_i \leftarrow sum(i,i,0)$} to {$n-(k-i)$} do \\
+\indent \indent \indent If {$i \neq k-1$} \\
+\indent \indent \indent \indent {$Combine(i+1)$} \\
+\indent \indent \indent Else \\
+\indent \indent \indent \indent {$showOutput$}\\
+\indent \indent \indent End If-Else\\
+\indent \indent End For\\
+\indent \indent {$y_{i+1} \leftarrow 0$}\\
+\indent \indent {$y_i \leftarrow y_i + 1$}\\
+\indent End Combine. \\\\
+\indent Subroutine {$sum(w,j,z)$}\\
+\indent \indent For {$i \leftarrow 0$} to {$j$} do \\
+\indent \indent \indent {$z \leftarrow z +  y_i$} \\
+\indent \indent End For \\
+\indent \indent return {$z+w$}.\\
+\indent End {$sum$}.
+
+\section*{Construção do SKSM}
+Para a construção do SKSM, foi observado a saída de dados da lista de subsets gerados pelo algoritmo \emph{Next {$k$}-subset of an {$n$}-Set}, com o intuito de caracterizar o padrão de repetição presente nos elementos do subset. Neste caso, o padrão de repetição pode ser delineado sob um modelo de árvore. A lei de formação dessa árvore é mostrada a seguir.
+
+\subsection*{Definição da Árvore Binomial}
+Estrutura que representa o padrão de repetição do problema em discussão, é caracterizada como uma árvore {$n$}-ária formada exclusivamente por coeficientes binomais.
+
+Seja {$\big({n\atop k}\big)_{w}$} o nó atual da árvore para um rótulo {$w$}, seus descendentes são definidos por:
+\begin{equation}
+\bigg({n\atop k}\bigg)_{w} \rightarrow 
+\left\{ 
+\begin{array}{l}
+\Big({n-1\atop k-1}\Big)_{w+1}\\
+\\
+\Big({n-2\atop k-1}\Big)_{w+2}\\
+\indent \vdots \\
+\Big({n-k+1\atop k-1}\Big)_{w + n - k + 1}\\
+\end{array} \right.
+\end{equation}
+Cada ascendente terá {$n + k -1$} descendentes, onde o padrão de repetição das combinações é analisado através da inserção de rótulos em cada nó da árvore. Para cada rótulo do nó atual, os nós descendentes contabilizam seus rótulos em relação ao nó ascendente, indicando o valor de cada elemento do subset encontrado na árvore.
+
+\subsection*{SKSM Specifications}
+O SKSM abstrai a construção da árvore em memória, realizando a busca apenas por meio de cálculo dos coeficientes binomiais e a sua relação com os rótulos dos nós que foram visitados na busca. O método realiza um laço externo, atribuindo a cada elemento do vetor que representa o subset {$k$}-dimensional o resultado da subrotina {$element$}. A subrotina {$element$} realiza uma busca entre os coeficientes binomais da árvore. A abstração da árvore é feita através das mudanças de índices dos coeficientes binomiais, atribuídos em {$x$} e {$y$}. O método é descrito a seguir.\\\\
+\textbf{Serial {$k$}-Subset of an {$n$}-Set Method}
+
+Especificações do Algoritmo:
+\begin{itemize}
+\item {$p$}: Subset {$k$}-dimensional;
+\item {$n$}: Cardinalidade do conjunto;
+\item {$a$}: Variável auxiliar, usada para verificar o critério de parada do método;
+\item {$x,y$}: Índices dos coeficientes binomiais, funcionando de acordo com a regra de formação da Árvore Binomial;
+\item {$r$}: Varíavel que controlará os rótulos da Árvore Binomial;
+\item {$s$}: Serial do subset {$p$};
+\item {$C_{n,k}$}: {$\big({n\atop k}\big)$}.
+\end{itemize}
+Routine:\\
+\indent {$x \leftarrow n$} \\
+\indent {$y \leftarrow k-1$}\\
+\indent {$a \leftarrow r \leftarrow 0$}\\
+\indent For {$i \leftarrow 0$} to {$k-1$} do\\
+\indent \indent {$p_i \leftarrow element$}\\
+\indent End For\\
+return {$p$}.\\
+End SKSM Routine.\\\\
+Subroutine {$element$}\\
+\indent For {$j \leftarrow 1 $} to  {$x - y + 1$} do \\
+\indent \indent If {$a + C_{x-j,y} < s$}\\
+\indent \indent \indent {$a \leftarrow a + C_{x-j,y}$}\\
+\indent \indent Else\\
+\indent \indent \indent {$x \leftarrow x - j$}\\
+\indent \indent \indent {$y \leftarrow y - 1$}\\
+\indent \indent \indent {$r \leftarrow r + j$}\\
+\indent \indent \indent return {$r$}.\\
+\indent \indent End If-Else\\
+\indent End For\\
+return {$r$}.\\
+End Subroutine {$element$}.
+
+\section*{Processo Inverso ao SKSM}
+Assim como muitos outros métodos seriais de outros problemas combinatoriais de igual relevância \cite{me}\cite{me1}\cite{me2}, o SKSM também possui o seu processo inverso. O que é dado como entrada é o vetor que representa o subset {$k$}-dimensional, juntamente com a cardinalidade do conjunto, denotado por {$n$}, obtendo como saída a sua posição na lista de combinações em ordem lexicográfica (número serial).
+
+\subsection*{SKSM Inverse Process Specifications}
+No caso do processo inverso ao SKSM, é tomado como limite máximo do laço mais interno ao algoritmo a diferença entre os elementos do subset. Isso determinará o quanto o laço interno irá iterar, com relação aos elementos do subset. Os índices do coeficiente binomial realizam o controle apropriado para que a soma entre os nós sejam feitas corretamente. O processo inverso também abstrai a estrutura da árvore, obtendo o resultado por meio de informações locais referentes ao subset dado como entrada.\\\\
+\textbf{Serial {$k$}-Subset of an {$n$}-Set Method (Inverted Process)}
+
+Especificações do Algoritmo:
+\begin{itemize}
+\item {$p$}: Subset {$k$}-dimensional;
+\item {$n$}: Cardinalidade do conjunto;
+\item {$x,y$}: Índices dos coeficientes binomiais;
+\item {$r$}: Varíavel que controlará o laço interno do método;
+\item {$s$}: Serial do subset {$p$};
+\item {$C_{n,k}$}: {$\big({n\atop k}\big)$}.
+\end{itemize}
+Routine:\\
+\indent {$x \leftarrow n$}\\
+\indent {$y \leftarrow k-1$}\\
+\indent {$s \leftarrow 1$}\\
+\indent {$r \leftarrow 0$}\\
+\indent For {$i \leftarrow 0$} to {$k-1$} do \\
+\indent \indent For {$j \leftarrow 1$} to {$p_i - r - 1$} do\\
+\indent \indent \indent {$s \leftarrow s + C_{x-j,y}$}\\
+\indent \indent End For\\
+\indent \indent {$x \leftarrow x - (p_i - r)$}\\
+\indent \indent {$y \leftarrow y - 1$}\\
+\indent \indent {$r \leftarrow p_i$}\\
+\indent End For\\
+return s.
+
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A.
+~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Permutation Method,
+(Not published yet),2004.
+\bibitem{me1} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Composition Method,
+(Not published yet),2004.
+\bibitem{me2} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Partition of an n-Set Method,
+(Not published yet),2004.
+\end{thebibliography}
+\end{document}

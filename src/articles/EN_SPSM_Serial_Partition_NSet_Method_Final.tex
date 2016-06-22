@@ -1,0 +1,340 @@
+%===============================SPSM - Serial Partition od an n-Set Method=============================
+\documentclass {amsart}
+\usepackage[latin1]{inputenc} %permite o uso de acentos
+\newcommand{\emerson}{Emerson A. de O. Lima}
+\newcommand{\glaucio}{Glaucio G. de M. Melo}
+
+%=================================Preamble ends here========================================
+\begin{document}
+\title[Serial Partition of an {$n$}-Set Method]
+ {Serial Partition of an {$n$}-Set Method}
+
+%=====================================Title=================================================
+\author[Melo]{\glaucio}
+\address[Melo]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Melo]{glaucio@dei.unicap.br}
+%=====================================Melo==================================================
+
+\author[Oliveira-Lima]{\emerson}
+\address[Oliveira-Lima]{Departamento de Estat\'{\i}stica e Inform\'{a}tica - UNICAP}
+\email[Oliveira-Lima]{eal@dei.unicap.br}
+%================================Oliveira Lima==============================================
+
+\keywords{Combinatorial Algorithms, Complexity, Optimization,
+Partition}
+%===================================Key Words===============================================
+
+\begin{abstract}
+This article presents the \emph{Serial Partition of an n-Set
+Method} (SPSM). The method's proposal is to obtain the partition
+of an {$n$}-Set from its serial number. The method that does the
+inverted SPSM process will be also shown, getting the serial
+number from the partition vector. The article concludes with a
+demonstration of the combinatorial properties from the material
+exposed here.
+\end{abstract}
+%=================================End Abstract=============================================
+\maketitle
+%=================================Introduction=============================================
+\section*{Introduction}
+
+For the sets partitions, we consider a family of subsets {$T_1,
+T_2,\ldots,T_k $} contained in a set {$S = \{1,2,\ldots,n\}$} that
+satisfy the conditions:
+
+\begin{equation}
+T_i \cap T_j = \oslash \indent (i \neq j)
+\end{equation}
+\begin{equation}
+\bigcup _{i=1}^{k} T_i = S
+\end{equation}
+\begin{equation}
+T_i = \oslash \indent (i = 1, 2, \ldots,k)
+\end{equation}
+
+We don't consider the order of the elements contained on each one
+of {$S$} subsets. The algorithm \emph{Next Partition of an
+n-Set}\cite{wi} finds the next partition set from the current one,
+working only with local information. The article's proposal is to
+obtain a partition of {$S$} related to its position on the list of
+partition, without considering the information about the partition
+vector.
+
+%==================== SPSM Construction =====================================
+\section*{SPSM Construction}
+
+The SPSM was built from the analysis of the data output of the
+\emph{Next Partition of an {$n$}-Set} algorithm. Each index that
+denotes the owned elements to a subset has a pattern model and the
+search for these indexes is made by a combinatorial structure that
+take as basis a tree that represents all the partitions of a set
+with {$n$} elements, called Bell Tree\cite{me}. The number of
+nodes of this structure grows quickly when {$n$} increases. So,
+the solution for such problem is to define a new structure that
+does a mapping of the tree specific positions. As a reference we
+took a matrix structure to keep those positions, called Matrix
+{$D$}.
+
+
+%==================== Definition of Matrix =====================================
+\subsection*{Definition of Matrix {$D$}}
+
+The Matrix {$D$} is a superior triangular matrix with {$n$} x
+{$n$} dimension. Its first column is made by the Bell
+Numbers\cite{me}
+
+\begin{equation}
+    D_{v,0} = B_{n-v}
+\end{equation}
+
+and the others columns are defined by the equation below:
+
+\begin{equation}
+    D_{u,v} = D_{u,v-1} - v.D_{u+1,v-1}
+\end{equation}
+
+Where {$u$} indicates the line and {$v$} the column on {$D$}. The
+matrix showed on \ref{md} represents the Matrix {$D$} for {$n=6$}.
+
+\begin{equation} \label{md}
+D = \left(\begin{array}{c c c c c c}
+203 & 151 & 77 & 26 & 6 & 1 \\
+52  & 37  & 17 & 5  & 1 &     \\
+15  & 10  & 4  & 1  &   &     \\
+5   & 3   & 1  &    &     &   \\
+2   & 1   &      &      &     &   \\
+1   &         &      &      &       &   \\
+\end{array}\right)
+\end{equation}
+
+
+%==================== Algorithm =====================================
+\subsection*{Algorithm for Matrix {$D$} fulfilling}
+
+Before process the SPSM, it is necessary fill in the components of
+Matrix {$D$} to speed up the attainment calculus of the search on
+the Bell Tree. The use of Matrix {$D$} abstracts the construction
+of the whole Bell Tree, processing only the necessary to the SPSM
+use. If the tree had been built completely, we would have the
+number of nodes {$R$} equivalent to
+
+\begin{equation} \label{eqb}
+R = \sum_{j=1}^{n}B_j
+\end{equation}
+
+whereas on the Matrix {$D$}, we have
+
+\begin{equation} \label{eqb}
+R = \frac{n^2 + n}{2}
+\end{equation}
+\\\\
+\textbf{Algorithm for Matrix {$D$} fulfilling}\\
+Algorithm Specifications:
+
+\begin{itemize}
+\item {$D$}: Matrix that keep the specific positions of the Bell
+Tree;
+
+\item {$i,j$}: Indexes for the raster of Matrix {$D$};
+
+\item{$B_n$}: Bell Number.
+
+\end{itemize}
+Routine: \\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$D_i,0 \leftarrow B_{n-i}$}\\
+\indent End For\\
+\indent For {$i \leftarrow 1$} to {$n-1$} do\\
+\indent \indent For {$j \leftarrow 0$} to {$n-i-1$}\\
+\indent \indent \indent {$D_{j,i} \leftarrow D_{j,i-1} - i.D_{j+1,i-1}$}\\
+\indent \indent End For\\
+\indent End For.
+
+
+%==================== SPSM Spec. =====================================
+\subsection*{SPSM's Specifications}
+
+After that the Matrix {$D$} has its values filled in, the SPSM can
+be invoked. We have an external loop that runs all the partition
+vector, attributing for each component by means of the sub-routine
+\emph{element} that does a raster on the current tree level (the
+structure was abstracted from the method). On this raster, we have
+a condition that examines if the variable used for the indication
+of extrapolation surpassed the serial number token as an input. If
+it exceed this value, we go down a tree level; if not, we add the
+descendants' current value to the control variable for later
+verification of extrapolation, token as an input. If the condition
+had not been satisfied for the whole loop, it means that the
+search on the tree's level arrived to the last descendant of this
+one, indicating that the search will be expanded to the last
+descendant of the current tree's level.
+\\\\
+\textbf{Serial Partition of an {$n$}-Set Method}\\
+Algorithm Specifications:
+
+\begin{itemize}
+
+\item {$p$}: Partition vector;
+
+\item {$D$}: Matrix that keep the specific positions of the tree;
+
+\item {$i,j$}: Indexes for the raster of Matrix {$D$};
+
+\item {$k$}: Index for the raster on the vector {$p$};
+
+\item {$t$}: Index that determines the element of each component
+of partition vector;
+
+\item {$a$}: Number that does the convergence for the serial
+number given as input;
+
+\item {$s$}: Partition's serial.
+
+\end{itemize}
+Routine: \\
+\indent {$i \leftarrow j \leftarrow a \leftarrow 0$}\\
+\indent For {$k \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$p_k \leftarrow element$}\\
+\indent End For \\
+return p.\\\\
+Sub-Routine {$element$}\\
+\indent For {$t \leftarrow 0$} to {$j$} do\\
+\indent \indent If {$a + D_{i,j} \geq s$}\\
+\indent \indent \indent {$i \leftarrow i + 1$}\\
+\indent \indent \indent return t.\\
+\indent \indent End If\\
+\indent \indent Else\\
+\indent \indent \indent {$a \leftarrow a + D_{i,j}$}\\
+\indent \indent End Else \\
+\indent End For\\
+\indent {$j \leftarrow j + 1$} \\
+return {$j$}.
+
+%==================== Stylized output here =====================================
+\subsection*{Algorithm for stylized output of the partition vectors}
+
+We know that the output gotten on both SPSM and Next Partition of
+an {$n$}-Set corresponds to the indexes of each subset of the
+partition on the set. For the partition vector on position {$26$},
+we have the output {$(0,1,1,0,0)$} and the stylized output
+corresponds to {$(1,4,5)(2,3)$}, indicating that {$1,4$} and {$5$}
+is on the first subset (indicated as {$0$}), with {$2$} and {$3$}
+on the second subset (indicated as {$1$} on the partition vector).
+For show the stylized output, it was used a \emph{string} vector
+to get the elements adequately on each subset which it belongs.
+Next, the algorithm does the output treatment and the all elements
+of each subset be ordered related to the last elements of
+partition as an input for the stylized output of the {$n$}-sets'
+partitions method.
+\\\\
+\textbf{Algorithm for stylized output data}\\
+Algorithm Specifications:
+
+\begin{itemize}
+\item {$s$}: {$Strings$} vector that does the mapping of the
+elements referring to the partition vector's indexes;
+
+\item {$p$}: Partition vector;
+
+\item {$i$}: Indexes for the raster of vector {$s$};
+
+\item {$r$}: Final output on {$string$} form;
+
+\item {$n$}: Size of the partition vector;
+
+\item {$+$}: Operator that denotes a concatenation between
+{$strings$};
+
+\item {$k$}: {$String$} that get the current element of the
+stylized output;
+
+\item {$length(w)$}: Function that returns the size of the
+{$string$} {$w$};
+
+\item {$substring(w,ini,sup)$}: Function that returns a {$w$}
+{$substring$} of the interval between {$ini$} and {$sup$}.
+
+\end{itemize}
+Routine:\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent {$s_{p_i} \leftarrow s_{p_i} + (i + 1) + ","$}\\
+\indent End For\\
+\indent For {$i \leftarrow 0$} to {$n-1$} do\\
+\indent \indent If {$length(s_i) > 1$}\\
+\indent \indent \indent {$k \leftarrow substring(s_i$}, {$0$}, {$length(s_i) - 1)$}\\
+\indent \indent End If\\
+\indent \indent {$s_i \leftarrow "(" + k + ")"$}\\
+\indent \indent If {$s_i = "()"$}\\
+\indent \indent \indent {$r \leftarrow r + s_i$}\\
+\indent \indent End If\\
+\indent End For\\
+return r.
+
+%==================== The Inverse Process =====================================
+\section*{Inverted Process of SPSM}
+
+For the inverted process of SPSM, we have a partition vector as
+input and the serial number as output. Such process is made taking
+each partition vector's component as the number of loops that can
+does a sum of each specific position referring to the current node
+of the tree mapping through the Matrix {$D$}.
+
+%==================== Specifications of Inverse Proc.. =====================================
+\subsection*{Inverted Process of SPSM Specifications}
+
+Initially, we have the indexes attribution referring to the Matrix
+{$D$}. The index {$u$} has the attribution equals to {$1$} because
+it is not necessary do the mapping on the first component of the
+Matrix {$D$}, once it always begins with zero for being the main
+tree descendant. After that, we have an external loop that runs
+the whole partition vector given as input, with another loop that
+does the sum to the main positions' serial mapped on Matrix {$D$}.
+After the sum attributions to the serial, we have the checking if
+the actual component should go down a line on Matrix {$D$}
+(equivalent to go down a level on the tree). If it should go down
+a level, the \textbf{line} is added by one unit. If not, the
+\textbf{column} on {$D$} is added by one unit, indicating the
+search to the descendants on the current node reached its last one
+and the search be doing on the other tree ramification.
+\\\\
+\textbf{Inverted Process of SPSM}\\
+Algorithm Specifications:
+\begin{itemize}
+\item {$p$}: Partition vector, given as input;
+
+\item {$i,j$}: Indexes referring to the raster on vector {$p$};
+
+\item {$D$}: Matrix of specific positions on the Bell Tree;
+
+\item {$u,v$}: Indexes referring to the mapping on {$D$};
+
+\item {$s$}: Partition's serial, that is the result expected from
+de algorithm.
+\end{itemize}
+Routine: \\
+\indent {$i \leftarrow j \leftarrow v \leftarrow 0$}\\
+\indent {$s \leftarrow u \leftarrow 1$}\\
+\indent For {$i \leftarrow 1$} to {$n-1$} do\\
+\indent \indent For {$j \leftarrow 0$} to {$p_i - 1$} do\\
+\indent \indent \indent {$s \leftarrow s + D_{u,v}$}\\
+\indent \indent End For\\
+\indent \indent If {$j \leq p_{i-1}$}\\
+\indent \indent \indent {$u \leftarrow u + 1$}\\
+\indent \indent End if\\
+\indent \indent Else\\
+\indent \indent \indent {$v \leftarrow v + 1$}\\
+\indent \indent End Else \\
+\indent End For \\
+return s.
+
+\section*{Demonstration}
+(This section is not ready)
+
+%===========================References==============================================
+\begin{thebibliography}{99}
+\bibitem{wi} WILF, Herbert S., NIJENHUIS, A. ~Combinatorial Algorithms for computers and calculators. Academic
+Press, INC, 1978.
+\bibitem{me} MELO, Glaucio G. de M., OLIVEIRA-LIMA, Emerson A. de O. Serial Partition of an n-Set Method,
+(Not published yet),2004.
+\end{thebibliography}
+\end{document}
