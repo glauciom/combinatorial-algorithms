@@ -1,0 +1,104 @@
+Algoritmos Combinatoriais - Comentários dos algoritmos
+
+1º Algoritmo: BackTrack Search
+
+Essa rotina constrói um vetor, um elemento de cada vez,
+o qual é requerido para satisfazer alguma coisa condição.
+
+A qualquer momento, o vetor parcial pode ser determinado
+como insatisfatório, mas a rotina grava informações sobre
+a escolha arbitrária foi feita, então a busca pode ser 
+reconstruída de maneira eficiente, voltando a busca.
+
+Referencias
+
+A Nijenhuis and H Wilf, Combinatorial Algorithms.
+
+
+Parâmetros
+
+Na entrada:
+
+L, Inteiro: O tamanho do vetor candidato que concluiu a busca;
+IARRAY(L): O vetor candidato;
+INDX, inteiro: indice para o vetor;
+na entrada, setar o INDX = 0;
+
+Na saída:
+
+1,  Um vetor de saída completo.
+2, São necessários mais candidatos.
+3, Não há mais vetores possíveis.
+K, Inteiro: Tamanho Corrente do vetor candidato;
+NSTACK, Inteiro: O tamanho corrente da pilha;
+integer STACK(MAXSTACK): lista de mais candidatos para as posições de 1..k;
+MAXSTACK, Inteiro: Tamanho máximo da pilha;
+
+!
+  integer l
+  integer maxstack
+!
+  integer iarray(l)
+  integer indx
+  integer k
+  integer nstack
+  integer stack(maxstack)
+!
+!  If this is the first call, request a candidate for position 1.
+!
+  if ( indx == 0 ) then
+    k = 1
+    nstack = 0
+    indx = 2
+    return
+  end if
+!
+!  Examine the stack.
+!
+  do
+
+    nstack = nstack - 1
+!
+!  If there are candidates for position K, take the first available
+!  one off the stack, and increment K.
+!
+!  This may cause K to reach the desired value of L, in which case
+!  we need to signal the user that a complete set of candidates
+!  is being returned.
+!
+    if ( stack(nstack+1) /= 0 ) then
+
+      iarray(k) = stack(nstack)
+      stack(nstack) = stack(nstack+1) - 1
+
+      if ( k /= l ) then
+        k = k + 1
+        indx = 2
+      else
+        indx = 1
+      end if
+
+      exit
+!
+!  If there are no candidates for position K, then decrement K.
+!  If K is still positive, repeat the examination of the stack.
+!
+    else
+
+      k = k - 1
+
+      if ( k <= 0 ) then
+        indx = 3
+        exit
+      end if
+
+    end if
+
+  end do
+
+  return
+end
+
+
+
+

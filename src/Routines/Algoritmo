@@ -1,0 +1,53 @@
+subroutine backtrack ( l, iarray, indx, k, nstack, stack, maxstack )
+!
+  integer l
+  integer maxstack
+!
+  integer iarray(l)
+  integer indx
+  integer k
+  integer nstack
+  integer stack(maxstack)
+!
+!  If this is the first call, request a candidate for position 1.
+!
+  if ( indx == 0 ) then
+    k = 1
+    nstack = 0
+    indx = 2
+    return
+  end if
+!
+!  Examine the stack.
+!
+  do
+
+    nstack = nstack - 1
+    if ( stack(nstack+1) /= 0 ) then
+
+      iarray(k) = stack(nstack)
+      stack(nstack) = stack(nstack+1) - 1
+
+      if ( k /= l ) then
+        k = k + 1
+        indx = 2
+      else
+        indx = 1
+      end if
+
+      exit
+    else
+
+      k = k - 1
+
+      if ( k <= 0 ) then
+        indx = 3
+        exit
+      end if
+
+    end if
+
+  end do
+
+  return
+end

@@ -1,0 +1,448 @@
+<HTML>
+
+  
+<!-- Mirrored from www.psc.edu/~burkardt/src/combo/combo.html by HTTrack Website Copier/3.x [XR&CO'2003], Fri, 05 Mar 2004 22:24:52 GMT -->
+<HEAD>
+    <TITLE>
+      COMBO - Kreher and Stinson Combinatorial Routines
+    </TITLE>
+  </HEAD>
+
+  <BODY bgcolor="#EEEEEE" link="#CC0000" alink="#FF3300" vlink="#000055">
+
+    <H1>
+      COMBO - Kreher and Stinson Combinatorial Routines
+    </H1>
+
+    <P>
+      <B>COMBO</B> is a collection of combinatorial routines, as described in
+      the recent book "Combinatorial Algorithms" by Kreher and Stinson.
+      Routines are available to count, list, rank and unrank such objects
+      as balanced sequences, trees, subsets, K subsets, partitions,
+      restricted growth functions, and permutations.
+    </P>
+
+    <P>
+      <DL>
+        <DT>
+          Reference 1:
+        </DT>
+        <DD>
+          Donald Kreher and Douglas Simpson,<BR>
+          Combinatorial Algorithms,<BR>
+          CRC Press, 1998.
+        </DD>
+        <DT>
+          Reference 2:
+        </DT>
+        <DD>
+          A Nijenhuis and H Wilf,<BR>
+          Combinatorial Algorithms,<BR>
+          Academic Press, 1978, second edition,<BR>
+          ISBN 0-12-519260-6.
+        </DD>
+      </DL>
+    </P>
+
+    <P>
+      Files you may copy include:
+      <UL>
+        <LI>
+          <A HREF = "combo.f90">COMBO.F90, the source code</A>;
+        </LI>
+        <LI>
+          <A HREF = "combo_prb.f90">COMBO_PRB.F90, the calling program</A>;
+        </LI>
+        <LI>
+          <A HREF = "combo_prb.out">COMBO_PRB.OUT, the sample output</A>.
+        </LI>
+      </UL>
+    </P>
+
+    <P>
+      The list of routines includes:
+      <UL>
+        <LI>
+          <B>BACKTRACK</B> supervises a backtrack search.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_CHECK</B> checks a balanced sequence.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_ENUM</B> enumerates the balanced sequences.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_RANK</B> ranks a balanced sequence.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_SUCCESSOR</B> computes the lexical balanced sequence successor.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_TO_TABLEAU</B> converts a balanced sequence to a 2 by N tableau.
+        </LI>
+        <LI>
+          <B>BAL_SEQ_UNRANK</B> unranks a balanced sequence.
+        </LI>
+        <LI>
+          <B>BELL_NUMBERS</B> computes the Bell numbers.
+        </LI>
+        <LI>
+          <B>BINOMIAL</B> computes the binomial coefficient C(N,K).
+        </LI>
+        <LI>
+          <B>COMBIN</B> computes the combinatorial coefficient C(N,K).
+        </LI>
+        <LI>
+          <B>CYCLE_CHECK</B> checks a permutation in cycle form.
+        </LI>
+        <LI>
+          <B>CYCLE_TO_PERM</B> converts a permutation from cycle to array form.
+        </LI>
+        <LI>
+          <B>DIST_ENUM</B> returns the number of distributions of indistinguishable objects.
+        </LI>
+        <LI>
+          <B>DIST_NEX</B> returns the next distribution of indistinguishable objects.
+        </LI>
+        <LI>
+          <B>EDGE_CHECK</B> checks a graph stored by edges.
+        </LI>
+        <LI>
+          <B>EDGE_DEGREE</B> returns the degree of the nodes of a graph stored by edges.
+        </LI>
+        <LI>
+          <B>EDGE_ENUM</B> enumerates the maximum number of edges in a graph on N_NODE nodes.
+        </LI>
+        <LI>
+          <B>FACTORIAL</B> computes the factorial N!
+        </LI>
+        <LI>
+          <B>FALL</B> computes the falling factorial function [X]_N.
+        </LI>
+        <LI>
+          <B>GAMMA_LOG</B> calculates the natural logarithm of GAMMA ( X ) for positive X.
+        </LI>
+        <LI>
+          <B>GRAY_CODE_CHECK</B> checks a Gray code element.
+        </LI>
+        <LI>
+          <B>GRAY_CODE_ENUM</B> enumerates the Gray codes on N digits.
+        </LI>
+        <LI>
+          <B>GRAY_CODE_RANK</B> computes the rank of a Gray code element.
+        </LI>
+        <LI>
+          <B>GRAY_CODE_SUCCESSOR</B> computes the binary reflected Gray code successor.
+        </LI>
+        <LI>
+          <B>GRAY_CODE_UNRANK</B> computes the Gray code element of given rank.
+        </LI>
+        <LI>
+          <B>I_SWAP</B> switches two integer values.
+        </LI>
+        <LI>
+          <B>IVEC_BACKTRACK</B> supervises a backtrack search for an integer vector.
+        </LI>
+        <LI>
+          <B>IVEC_PART1</B> partitions an integer N into NPART parts.
+        </LI>
+        <LI>
+          <B>IVEC_PART2</B> partitions an integer N into NPART nearly equal parts.
+        </LI>
+        <LI>
+          <B>IVEC_PRINT</B> prints an integer vector.
+        </LI>
+        <LI>
+          <B>IVEC_REVERSE</B> reverses the elements of an integer vector.
+        </LI>
+        <LI>
+          <B>IVEC_SEARCH_BINARY_A</B> searches the ascending sorted vector A for the value B.
+        </LI>
+        <LI>
+          <B>IVEC_SEARCH_BINARY_D</B> searches the descending sorted vector A for the value B.
+        </LI>
+        <LI>
+          <B>IVEC_SORT_INSERT_A</B> uses an ascending insertion sort on an integer vector.
+        </LI>
+        <LI>
+          <B>IVEC_SORT_INSERT_D</B> uses a descending insertion sort on an integer vector.
+        </LI>
+        <LI>
+          <B>KNAPSACK_01</B> solves the 0/1 knapsack problem.
+        </LI>
+        <LI>
+          <B>KNAPSACK_RATIONAL</B> solves the rational knapsack problem.
+        </LI>
+        <LI>
+          <B>KNAPSACK_REORDER</B> reorders the knapsack data by "profit density".
+        </LI>
+        <LI>
+          <B>KSUBSET_COLEX_CHECK</B> checks a K subset in colex form.
+        </LI>
+        <LI>
+          <B>KSUBSET_COLEX_RANK</B> computes the colex rank of a K subset.
+        </LI>
+        <LI>
+          <B>KSUBSET_COLEX_SUCCESSOR</B> computes the K subset colex successor.
+        </LI>
+        <LI>
+          <B>KSUBSET_COLEX_UNRANK</B> computes the K subset of given colex rank.
+        </LI>
+        <LI>
+          <B>KSUBSET_ENUM</B> enumerates the K element subsets of an N set.
+        </LI>
+        <LI>
+          <B>KSUBSET_LEX_CHECK</B> checks a K subset in lex form.
+        </LI>
+        <LI>
+          <B>KSUBSET_LEX_RANK</B> computes the lexicographic rank of a K subset.
+        </LI>
+        <LI>
+          <B>KSUBSET_LEX_SUCCESSOR</B> computes the K subset lexicographic successor.
+        </LI>
+        <LI>
+          <B>KSUBSET_LEX_UNRANK</B> computes the K subset of given lexicographic rank.
+        </LI>
+        <LI>
+          <B>KSUBSET_REVDOOR_RANK</B> computes the revolving door rank of a K subset.
+        </LI>
+        <LI>
+          <B>KSUBSET_REVDOOR_SUCCESSOR</B> computes the K subset revolving door successor.
+        </LI>
+        <LI>
+          <B>KSUBSET_REVDOOR_UNRANK</B> computes the K subset of given revolving door rank.
+        </LI>
+        <LI>
+          <B>MARRIAGE</B> finds a stable set of marriages for given preferences.
+        </LI>
+        <LI>
+          <B>MOUNTAIN</B> enumerates the mountains.
+        </LI>
+        <LI>
+          <B>NPART_ENUM</B> enumerates the number of partitions of N with NPART parts.
+        </LI>
+        <LI>
+          <B>NPART_RSF_LEX_RANK</B> computes the lex rank of an RSF NPART partition.
+        </LI>
+        <LI>
+          <B>NPART_RSF_LEX_SUCCESSOR</B> computes the RSF lex successor for NPART partitions.
+        </LI>
+        <LI>
+          <B>NPART_RSF_LEX_UNRANK</B> unranks an RSF NPART partition in the lex ordering.
+        </LI>
+        <LI>
+          <B>NPART_SF_LEX_SUCCESSOR</B> computes SF NPART partition.
+        </LI>
+        <LI>
+          <B>NPART_TABLE</B> tabulates the number of partitions of N having NPART parts.
+        </LI>
+        <LI>
+          <B>PART_ENUM</B> enumerates the number of partitions of N.
+        </LI>
+        <LI>
+          <B>PART_RSF_CHECK</B> checks a reverse standard form partition of an integer.
+        </LI>
+        <LI>
+          <B>PART_SF_CHECK</B> checks a standard form partition of an integer.
+        </LI>
+        <LI>
+          <B>PART_SF_CONJUGATE</B> computes the conjugate of a partition.
+        </LI>
+        <LI>
+          <B>PART_SF_MAJORIZE</B> determines if partition A majorizes partition B.
+        </LI>
+        <LI>
+          <B>PART_SUCCESSOR</B> computes the lexicographic partition successor.
+        </LI>
+        <LI>
+          <B>PART_TABLE</B> tabulates the number of partitions of N.
+        </LI>
+        <LI>
+          <B>PARTN_SF_CHECK</B> checks an SF partition of an integer with largest entry NMAX.
+        </LI>
+        <LI>
+          <B>PARTN_ENUM</B> enumerates the partitions of N with maximum element NMAX.
+        </LI>
+        <LI>
+          <B>PARTN_SUCCESSOR</B> computes partitions whose largest part is NMAX.
+        </LI>
+        <LI>
+          <B>PERM_CHECK</B> checks a representation of a permutation.
+        </LI>
+        <LI>
+          <B>PERM_ENUM</B> enumerates the permutations on N digits.
+        </LI>
+        <LI>
+          <B>PERM_INV</B> computes the inverse of a permutation.
+        </LI>
+        <LI>
+          <B>PERM_LEX_RANK</B> computes the lexicographic rank of a permutation.
+        </LI>
+        <LI>
+          <B>PERM_LEX_SUCCESSOR</B> computes the lexicographic permutation successor.
+        </LI>
+        <LI>
+          <B>PERM_LEX_UNRANK</B> computes the permutation of given lexicographic rank.
+        </LI>
+        <LI>
+          <B>PERM_MUL</B> computes the product of two permutations.
+        </LI>
+        <LI>
+          <B>PERM_PARITY</B> computes the parity of a permutation.
+        </LI>
+        <LI>
+          <B>PERM_TJ_RANK</B> computes the Trotter-Johnson rank of a permutation.
+        </LI>
+        <LI>
+          <B>PERM_TJ_SUCCESSOR</B> computes the Trotter-Johnson permutation successor.
+        </LI>
+        <LI>
+          <B>PERM_TJ_UNRANK</B> computes the permutation of given Trotter-Johnson rank.
+        </LI>
+        <LI>
+          <B>PERM_TO_CYCLE</B> converts a permutation from array to cycle form.
+        </LI>
+        <LI>
+          <B>PRUEFER_CHECK</B> checks a Pruefer code.
+        </LI>
+        <LI>
+          <B>PRUEFER_ENUM</B> enumerates the Pruefer codes on N-2 digits.
+        </LI>
+        <LI>
+          <B>PRUEFER_RANK</B> ranks a Pruefer code.
+        </LI>
+        <LI>
+          <B>PRUEFER_SUCCESSOR</B> computes the lexical Pruefer sequence successor.
+        </LI>
+        <LI>
+          <B>PRUEFER_TO_TREE</B> converts a Pruefer code to a tree.
+        </LI>
+        <LI>
+          <B>PRUEFER_UNRANK</B> unranks a Pruefer code.
+        </LI>
+        <LI>
+          <B>QUEENS</B> finds possible positions for the K-th nonattacking queen.
+        </LI>
+        <LI>
+          <B>R_SWAP</B> swaps two real values.
+        </LI>
+        <LI>
+          <B>RGF_CHECK</B> checks a restricted growth function.
+        </LI>
+        <LI>
+          <B>RGF_ENUM</B> enumerates the restricted growth functions on M.
+        </LI>
+        <LI>
+          <B>RGF_G_ENUM</B> enumerates the generalized restricted growth functions.
+        </LI>
+        <LI>
+          <B>RGF_RANK</B> ranks a restricted growth function.
+        </LI>
+        <LI>
+          <B>RGF_SUCCESSOR</B> generates the next restricted growth function.
+        </LI>
+        <LI>
+          <B>RGF_TO_SETPART</B> converts a restricted growth function to a set partition.
+        </LI>
+        <LI>
+          <B>RGF_UNRANK</B> returns the restricted growth function of a given rank.
+        </LI>
+        <LI>
+          <B>RVEC_BACKTRACK</B> supervises a backtrack search for a real vector.
+        </LI>
+        <LI>
+          <B>SETPART_CHECK</B> checks a set partition.
+        </LI>
+        <LI>
+          <B>SETPART_ENUM</B> enumerates the partitions of a set of M elements.
+        </LI>
+        <LI>
+          <B>SETPART_TO_RGF</B> converts a set partition to a restricted growth function.
+        </LI>
+        <LI>
+          <B>STIRLING_NUMBERS1</B> computes Stirling numbers of the first kind.
+        </LI>
+        <LI>
+          <B>STIRLING_NUMBERS2</B> computes Stirling numbers of the second kind.
+        </LI>
+        <LI>
+          <B>SUBSET_COLEX_RANK</B> computes the colexicographic rank of a subset.
+        </LI>
+        <LI>
+          <B>SUBSET_COLEX_SUCCESSOR</B> computes the subset colexicographic successor.
+        </LI>
+        <LI>
+          <B>SUBSET_COLEX_UNRANK</B> computes the subset of given colexicographic rank.
+        </LI>
+        <LI>
+          <B>SUBSET_CHECK</B> checks a subset.
+        </LI>
+        <LI>
+          <B>SUBSET_COMPLEMENT</B> computes the complement of a set.
+        </LI>
+        <LI>
+          <B>SUBSET_DISTANCE</B> computes the Hamming distance between two sets.
+        </LI>
+        <LI>
+          <B>SUBSET_ENUM</B> enumerates the subsets of a set with N elements.
+        </LI>
+        <LI>
+          <B>SUBSET_INTERSECT</B> computes the intersection of two sets.
+        </LI>
+        <LI>
+          <B>SUBSET_LEX_RANK</B> computes the lexicographic rank of a subset.
+        </LI>
+        <LI>
+          <B>SUBSET_LEX_SUCCESSOR</B> computes the subset lexicographic successor.
+        </LI>
+        <LI>
+          <B>SUBSET_LEX_UNRANK</B> computes the subset of given lexicographic rank.
+        </LI>
+        <LI>
+          <B>SUBSET_UNION</B> computes the union of two sets.
+        </LI>
+        <LI>
+          <B>SUBSET_WEIGHT</B> computes the Hamming weight of a set.
+        </LI>
+        <LI>
+          <B>SUBSET_XOR</B> computes the symmetric difference of two sets.
+        </LI>
+        <LI>
+          <B>SUBSETSUM_SWAP</B> seeks a solution of the subset sum problem by swapping.
+        </LI>
+        <LI>
+          <B>TABLEAU_CHECK</B> checks a 2 by N tableau.
+        </LI>
+        <LI>
+          <B>TABLEAU_ENUM</B> enumerates the 2 by N standard tableaus.
+        </LI>
+        <LI>
+          <B>TABLEAU_TO_BAL_SEQ</B> converts a 2 by N tableau to a balanced sequence.
+        </LI>
+        <LI>
+          <B>TREE_CHECK</B> checks a tree.
+        </LI>
+        <LI>
+          <B>TREE_ENUM</B> enumerates the trees on N nodes.
+        </LI>
+        <LI>
+          <B>TREE_TO_PRUEFER</B> converts a tree to a Pruefer code.
+        </LI>
+      </UL>
+    </P>
+
+    <P>
+      Return to the <A HREF = "../f_src.html">FORTRAN software page</A>.
+    </P>
+
+    <HR>
+
+    <I>
+      Last revised on 27 March 2001.
+    </I>
+
+  </BODY>
+
+
+<!-- Mirrored from www.psc.edu/~burkardt/src/combo/combo.html by HTTrack Website Copier/3.x [XR&CO'2003], Fri, 05 Mar 2004 22:24:55 GMT -->
+</HTML>
