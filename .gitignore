@@ -1,0 +1,11 @@
+# maven wrapper jar file
+**/.mvn/wrapper/maven-wrapper.jar
+**/*.iml
+**/target
+**/generated-sources
+.idea/
+.classpath
+.project
+.settings
+.checkstyle
+
