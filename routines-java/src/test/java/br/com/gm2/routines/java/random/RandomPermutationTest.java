@@ -17,7 +17,9 @@ public class RandomPermutationTest {
 				identity[i] = i + 1;
 			}
 			RandomPermutation test = new RandomPermutation(n);
-			test.randomPermutationAlgorithm();
+			for (int h = 0; h < k; h++) {
+				test.randomPermutationAlgorithm();
+			}
 			Arrays.sort(test.getRandomPermutation());
 			Assert.assertArrayEquals(identity, test.getRandomPermutation());
 		}
