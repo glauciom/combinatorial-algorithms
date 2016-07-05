@@ -1,4 +1,4 @@
-package br.com.gm2.routines.java;
+package br.com.gm2.routines.java.next;
 
 /**
  * NEXPER subroutine, java implementation - Documentation: Combinatorial
