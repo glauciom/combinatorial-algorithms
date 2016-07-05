@@ -1,9 +1,8 @@
 package br.com.gm2.routines.java.next;
 
 /**
- * NEXPER subroutine, java implementation - Documentation: Combinatorial
- * Algorithms, WILF / NIJENHUIS, Next Permutation of N Letters (NEXPER), page
- * 54.
+ * Java implementation - Documentation: Combinatorial Algorithms, WILF /
+ * NIJENHUIS, page 54
  * 
  * @author Glaucio Melo.
  */
@@ -24,7 +23,7 @@ public class NextPermutation {
 	public int[] actual() {
 		return a;
 	}
-	
+
 	public int[] offset() {
 		return d;
 	}
@@ -39,7 +38,7 @@ public class NextPermutation {
 			r++;
 		} while (!isLastPermutation());
 	}
-	
+
 	public void allPermutationsNoOutput() {
 		// Algorithm knows how to stop to generate permutations.
 		// Generating all possible permutations at once
@@ -175,5 +174,5 @@ public class NextPermutation {
 		flag = t;
 		a[f] = j;
 	}
-	
+
 }

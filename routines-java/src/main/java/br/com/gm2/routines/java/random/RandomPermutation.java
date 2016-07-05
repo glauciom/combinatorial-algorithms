@@ -1,9 +1,8 @@
 package br.com.gm2.routines.java.random;
 
 /**
- * NEXPER subroutine, java implementation - Documentation: Combinatorial
- * Algorithms, WILF / NIJENHUIS, Next Permutation of N Letters (NEXPER), page
- * 62.
+ * Java implementation - Documentation: Combinatorial Algorithms, WILF /
+ * NIJENHUIS, page 62.
  * 
  * @author Glaucio Melo.
  */
