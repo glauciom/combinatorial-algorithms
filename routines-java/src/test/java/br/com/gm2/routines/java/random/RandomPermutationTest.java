@@ -3,7 +3,7 @@ package br.com.gm2.routines.java.random;
 import java.util.Arrays;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Test;;
 
 public class RandomPermutationTest {
 

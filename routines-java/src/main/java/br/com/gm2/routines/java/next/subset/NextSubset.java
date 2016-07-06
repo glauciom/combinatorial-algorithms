@@ -1,4 +1,4 @@
-package br.com.gm2.routines.java.next;
+package br.com.gm2.routines.java.next.subset;
 
 import br.com.gm2.routines.java.exception.OutOfRangeException;
 

@@ -1,9 +1,9 @@
-package br.com.gm2.routines.java.next;
+package br.com.gm2.routines.java.next.permutation;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.com.gm2.routines.java.next.NextPermutation;
+import br.com.gm2.routines.java.next.permutation.NextPermutation;
 
 public class NextPermutationTest {
 
